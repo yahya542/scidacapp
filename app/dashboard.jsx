@@ -1,31 +1,38 @@
-import { StyleSheet, Text, View, StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Image, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Dashboard() {
 
   const renderCard = (card) => (
     <TouchableOpacity style={styles.card} key={card.id}>
-      {/* Jika Anda ingin menampilkan SVG, Anda bisa menggunakan SvgUri atau Image */}
-      {card.icon && (
-        <Image source={card.icon} style={styles.cardIcon} /> // Menampilkan ikon
-      )}
-      <Text style={styles.cardText}>{card.label}</Text>
+      <ImageBackground
+        source={card.image ? card.image : require('../assets/images/scidac.png')} // Gambar default jika tidak ada gambar
+        style={styles.cardBackground}
+        imageStyle={{ borderRadius: 10 }} // Menambahkan border radius untuk gambar agar sesuai dengan card
+      >
+        {/* Jika Anda ingin menampilkan ikon, bisa tetap menggunakan Image */}
+        {card.icon && (
+          <Image source={card.image} style={styles.cardIcon} /> // Menampilkan ikon
+        )}
+        <Text style={styles.cardText}>{card.label}</Text>
+      </ImageBackground>
     </TouchableOpacity>
   );
 
   const cardData = [
-    { id: '1', label: 'Card 1', icon: require('../assets/images/math.svg') }, 
-    { id: '2', label: 'Card 2' },
-    { id: '3', label: 'Card 3' },
-    { id: '4', label: 'Card 4' },
-    { id: '5', label: 'Card 5' },
-    { id: '6', label: 'Card 6' },
+    { id: '1',   image: require('../assets/images/math.png') },
+    { id: '2',  image: require('../assets/images/islamic.png')},
+    { id: '3', image: require('../assets/images/science.png')},
+    { id: '4', image: require('../assets/images/store.png')},
+    { id: '5', image: require('../assets/images/activity.png')},
+    { id: '6', image: require('../assets/images/money.png')},
   ];
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <StatusBar hidden={true} />
-     
+
         <View style={styles.view1}>
           <Image
             source={require('../assets/images/scidac.png')}
@@ -37,7 +44,7 @@ export default function Dashboard() {
             <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold' }}>User</Text>
           </View>
         </View>
-        
+
         {/* view2 */}
         <View style={styles.view2}></View>
 
@@ -45,12 +52,20 @@ export default function Dashboard() {
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map(card => renderCard(card))}
+            <Text style={ {marginLeft:35, marginTop:-20, color:"black"} }   > Math </Text>
+            <Text style={ {marginRight:2, marginTop:-20, color:"black"} }   > Islamic</Text>
+            <Text style={ {marginRight:28, marginTop:-20, color:"black"} } > Science</Text>
+
           </View>
         </View>
 
         <View style={styles.view3}>
-          <View style={styles.row}>
+          <View style={styles.row }>
             {cardData.slice(3, 6).map(card => renderCard(card))}
+            <Text style={ {marginLeft:35, marginTop:-20, color:"black"} }   > shop </Text>
+            <Text style={ {marginRight:-20, marginTop:-20, color:"black"} }   > Activity</Text>
+            <Text style={ {marginRight:20, marginTop:-20, color:"black"} } > Tabungan </Text>
+
           </View>
         </View>
 
@@ -98,12 +113,12 @@ const styles = StyleSheet.create({
   image1: {
     height: 55,
     marginTop: 15,
-    marginLeft:-320,
+    marginLeft: -320,
   },
   text1: {
     marginTop: -50,
     color: 'white',
-    marginLeft:-200, 
+    marginLeft: -200,
   },
   scrollContent: {
     paddingBottom: 80, // Memberikan ruang ekstra di bawah untuk footer tetap
@@ -121,14 +136,13 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '20%',  // Menyesuaikan lebar card menjadi 1/3 dari layar
-    height: 120,
-    borderColor: 'orange',
-    borderWidth: 1,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
-    padding: 10,
-    margin: 10,
+    borderRadius: 5,
+    margin: 20,
+    marginTop:10, 
+    marginBottom:30,
   },
   cardText: {
     color: '#fff',
@@ -139,5 +153,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap', // Membuat baris baru jika tidak cukup ruang
+  },
+  cardBackground:{
+    width: 75,
+    height: 75,
+    justifyContent: 'center',
+    alignItems: 'center',
+
   },
 });
