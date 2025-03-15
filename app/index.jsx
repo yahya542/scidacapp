@@ -12,7 +12,7 @@ const Index = () => {
   // Menggunakan useEffect untuk memulai timer
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate( 'dashboard');  // Navigasi ke halaman Dashboard setelah 3 detik
+      navigation.navigate( 'autentikasi/login');  // Navigasi ke halaman Dashboard setelah 3 detik
     }, 2000);  // Set timer selama 3 detik
 
     // Cleanup timer ketika komponen unmount

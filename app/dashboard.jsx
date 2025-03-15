@@ -52,9 +52,9 @@ export default function Dashboard() {
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map(card => renderCard(card))}
-            <Text style={ {marginLeft:35, marginTop:-20, color:"black"} }   > Math </Text>
-            <Text style={ {marginRight:2, marginTop:-20, color:"black"} }   > Islamic</Text>
-            <Text style={ {marginRight:28, marginTop:-20, color:"black"} } > Science</Text>
+            <Text style={ {marginLeft:35, marginTop:-40, color:"black"} }   > Math </Text>
+            <Text style={ {marginRight:2, marginTop:-40, color:"black"} }   > Islamic</Text>
+            <Text style={ {marginRight:28, marginTop:-40, color:"black"} } > Science</Text>
 
           </View>
         </View>
@@ -62,9 +62,9 @@ export default function Dashboard() {
         <View style={styles.view3}>
           <View style={styles.row }>
             {cardData.slice(3, 6).map(card => renderCard(card))}
-            <Text style={ {marginLeft:35, marginTop:-20, color:"black"} }   > shop </Text>
-            <Text style={ {marginRight:-20, marginTop:-20, color:"black"} }   > Activity</Text>
-            <Text style={ {marginRight:20, marginTop:-20, color:"black"} } > Tabungan </Text>
+            <Text style={ {marginLeft:35, marginTop:-40, color:"black"} }   > shop </Text>
+            <Text style={ {marginRight:-20, marginTop:-40, color:"black"} }   > Activity</Text>
+            <Text style={ {marginRight:20, marginTop:-40, color:"black"} } > Tabungan </Text>
 
           </View>
         </View>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   view2: {
     backgroundColor: 'lightblue',
     width: '85%',
-    marginTop: -160,
+    marginTop: -180,
     marginLeft: 35,
     height: 250,
     justifyContent: 'center',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   image1: {
     height: 55,
     marginTop: 15,
-    marginLeft: -320,
+    marginLeft: "-85%",
   },
   text1: {
     marginTop: -50,
@@ -128,11 +128,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: 'white',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
+    height: "10%",
+    borderRadius: 20,
   },
   card: {
     width: '20%',  // Menyesuaikan lebar card menjadi 1/3 dari layar
@@ -155,8 +157,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap', // Membuat baris baru jika tidak cukup ruang
   },
   cardBackground:{
-    width: 75,
-    height: 75,
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
 
