@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,37 +11,50 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
+  const showAlert = (message) => {
+    Alert.alert(
+      "Login Gagal", // Judul alert
+      message, // Pesan alert yang diterima dari parameter
+      [
+        { text: "OK", onPress: () => console.log("Tombol OK ditekan") }, // Tombol OK
+      ],
+      { cancelable: false } // Alert tidak bisa dibatalkan dengan menekan di luar alert
+    );
+  };
+  
 
   const handleLogin = async () => {
     try {
       // Kirim request login ke API
-      const response = await fetch('http://192.168.43.62:8000/api-login/', {
+      const response = await fetch('http://192.168.164.51:8000/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
-  
+
       const data = await response.json();
       console.log('Response Status:', response.status);  // Cek status code dari respons
       console.log('Response Data:', data);  // Cek data yang diterima
-  
-      if (response.ok && data.access) {
-        const {access} = data;
+
+      if (response.ok && data.access_token) {
+        const { access_token } = data;
 
         // Simpan token ke AsyncStorage
-        await AsyncStorage.setItem('access_token', access);
+        await AsyncStorage.setItem('access_token', access_token);
         console.log('Token saved successfully');
-  
+
         // Redirect ke halaman dashboard
         navigation.navigate('dashboard');
 
       } else {
-        // Jika login gagal, tampilkan pesan error
-        setError(data.detail || 'Login failed');
+        const errorMessage = data.detail || 'Login failed';
+        showAlert(errorMessage);
       }
+
+
     } catch (error) {
       // Jika terjadi error di dalam try-catch, tampilkan pesan error
       setError('Maaf, terjadi kesalahan');
@@ -51,23 +64,36 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      {error && <Text style={styles.error}>{error}</Text>}
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <View >
+          <Image source={require('../../assets/images/moon.png')} style={{ width: 100, height: 100, marginBottom: -80, justifyContent: 'center', alignItems: 'center' }} />
+          <Image source={require('../../assets/images/login.png')} style={{ width: 100, height: 100, marginBottom: 60, justifyContent: 'center', alignItems: 'center' }} />
+      </View>
+
+      <View style={styles.view1}>
+        <View style={styles.view2}>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Text style={styles.error} > Lupa password? </Text>
+        </View>
+        {error && <Text style={styles.error}>{error}</Text>}
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+
+
+
     </View>
   );
 };
@@ -76,27 +102,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
+    backgroundColor: "lightblue",
+
+
+  },
+  view1: {
+
+    justifyContent: 'center',
+    padding: 70,
+    backgroundColor: "white",
+    height: "80%",
+    width: "110%",
+    marginBottom: -140,
+    borderRadius: 40,
+
+
+  },
+  view2: {
+
+    marginTop: -110,
+    marginBottom: 20,
+    
+  
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: 'lightblue',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 15,
     paddingLeft: 8,
+    borderRadius: 10,
   },
   error: {
     color: 'red',
     marginBottom: 10,
+    marginTop: -10,
+    textAlign: 'right',
+    fontSize: 12,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'orange',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
+    borderRadius: 10,
   },
 });
 
