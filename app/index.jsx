@@ -4,6 +4,7 @@ import {useNavigation} from 'expo-router';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
+
 const Stack = createStackNavigator();
 
 const Index = () => {

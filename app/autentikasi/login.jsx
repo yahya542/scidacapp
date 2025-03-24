@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, TextInput, button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 
 
 
-const Login = () => {
+const login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -61,6 +61,11 @@ const Login = () => {
       console.error(error);  // Log kesalahan untuk debugging
     }
   };
+  const handleregister = async() =>{
+    navigation.navigate('autentikasi/register')
+  }
+
+
 
   return (
     <View style={styles.container}>
@@ -90,6 +95,10 @@ const Login = () => {
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleregister} >
+          <Text style={styles.buttonText2}>Belum punya akun? klik disini</Text>
+        </TouchableOpacity>
+        
       </View>
 
 
@@ -152,7 +161,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     borderRadius: 10,
   },
+  buttonText2: {
+   color: 'slategrey',
+   borderRadius: 10,
+   marginTop : 10, 
+   marginLeft:18,
+  },
 });
 
 
-export default Login;
+export default login;
