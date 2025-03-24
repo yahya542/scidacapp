@@ -10,13 +10,22 @@ export default function dashboard() {
 
   const navigation = useNavigation();
   // Menampilkan kartu
-  const renderCard = (card, index, index1) => (
+  const renderCard = (card, index) => (
     <TouchableOpacity
       style={styles.card}
       key={card.id}
       onPress={() => {
-        if (index === 1) { navigation.navigate('fitur/islamic/db_islamic'); }
+        if (card.id === '1') { navigation.navigate('fitur/math/db_math'); }
+        else if (card.id === '2') { navigation.navigate('fitur/islamic/db_islamic'); }
+        else if (card.id === '3') { navigation.navigate('fitur/science/db_science'); }
+        else if (card.id === '4') { navigation.navigate('fitur/shop/db_shop'); }
+        else if (card.id === '5') { navigation.navigate('fitur/activity/db_activity'); }
+        else if (card.id === '6') { navigation.navigate('fitur/savings/db_savings'); }
+        
+        
+        
       }
+        
 
       }
     >
@@ -30,10 +39,8 @@ export default function dashboard() {
         )}
         <Text style={styles.cardText}>{card.label}</Text>
       </ImageBackground>
-    </TouchableOpacity>,
-    <TouchableOpacity
-
-    ></TouchableOpacity>
+    </TouchableOpacity>
+    
   );
 
   const cardData = [
@@ -82,10 +89,10 @@ export default function dashboard() {
 
         <View style={styles.view3}>
           <View style={styles.row}>
-            {cardData.slice(3, 6).map((card, index1) => renderCard(card, index))}
+            {cardData.slice(3, 6).map((card, index) => renderCard(card, index))}
             <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Shop</Text>
             <Text style={{ marginRight: -20, marginTop: -60, color: 'black' }}>Activity</Text>
-            <Text style={{ marginRight: 20, marginTop: -60, color: 'black' }}>Tabungan</Text>
+            <Text style={{ marginRight: 20, marginTop: -60, color: 'black' }}>Savings</Text>
           </View>
         </View>
       </ScrollView>
