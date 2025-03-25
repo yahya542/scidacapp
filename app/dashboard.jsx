@@ -1,19 +1,18 @@
-import { StyleSheet, Text, View, StatusBar, Image, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, navigation } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
-
-export default function dashboard() {
+export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();  // Menggunakan useNavigation dengan benar
 
+  const ref = useRef(null);
 
-  const navigation = useNavigation();
-  // Menampilkan kartu
-  const renderCard = (card, index) => (
+  const renderCard = (card) => (
     <TouchableOpacity
       style={styles.card}
-      key={card.id}
       onPress={() => {
         if (card.id === '1') { navigation.navigate('fitur/math/db_math'); }
         else if (card.id === '2') { navigation.navigate('fitur/islamic/db_islamic'); }
@@ -21,66 +20,67 @@ export default function dashboard() {
         else if (card.id === '4') { navigation.navigate('fitur/shop/db_shop'); }
         else if (card.id === '5') { navigation.navigate('fitur/activity/db_activity'); }
         else if (card.id === '6') { navigation.navigate('fitur/savings/db_savings'); }
-        
-        
-        
-      }
-        
-
-      }
+      }}
     >
       <ImageBackground
-        source={card.image ? card.image : require('../assets/images/scidac.png')} // Gambar default jika tidak ada gambar
+        source={card.image ? card.image : require('../assets/images/scidac.png')}
         style={styles.cardBackground}
-        imageStyle={{ borderRadius: 10 }} // Menambahkan border radius untuk gambar agar sesuai dengan card
+        imageStyle={{ borderRadius: 10 }}
       >
-        {card.icon && (
-          <Image source={card.image} style={styles.cardIcon} /> // Menampilkan ikon
-        )}
         <Text style={styles.cardText}>{card.label}</Text>
       </ImageBackground>
     </TouchableOpacity>
-    
   );
 
   const cardData = [
-    { id: '1', image: require('../assets/images/math.png') },
-    { id: '2', image: require('../assets/images/islamic.png') },
-    { id: '3', image: require('../assets/images/science.png') },
-    { id: '4', image: require('../assets/images/store.png') },
-    { id: '5', image: require('../assets/images/activity.png') },
-    { id: '6', image: require('../assets/images/money.png') },
+    { id: '1', image: require('../assets/images/math.png'), },
+    { id: '2', image: require('../assets/images/islamic.png'), },
+    { id: '3', image: require('../assets/images/science.png'), },
+    { id: '4', image: require('../assets/images/store.png'), },
+    { id: '5', image: require('../assets/images/activity.png'), },
+    { id: '6', image: require('../assets/images/money.png'), },
   ];
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ref.current?.scrollTo({ x: 300, animated: true });
+    }, 2000);
 
-
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
+      <StatusBar style="auto" headershown={false} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <StatusBar hidden={true} />
-
-        {/* Tampilkan informasi pengguna yang sedang login */}
+        {/* Informasi pengguna */}
         <View style={styles.view1}>
-          <Image
-            source={require('../assets/images/scidac.png')}
-            style={styles.image1}
-            resizeMode="contain"
-          />
+          <Image source={require('../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
             <Text style={{ color: 'white' }}>Hai,</Text>
             <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold' }}>
-              {user && user.username ? user.username : "User"}  {/* Menampilkan nama pengguna */}
+              {user && user.username ? user.username : "User"}
             </Text>
           </View>
         </View>
 
-        <View style={styles.view2}></View>
+        {/* Pop-up informasi */}
+        <View style={styles.view2}>
+          <View style={styles.view2_content}>
+            <ScrollView horizontal={true} ref={ref}>
+              <Text style={styles.box}>isi1</Text>
+              <Text style={styles.box}>isi2</Text>
+              <Text style={styles.box}>isi3</Text>
+              <Text style={styles.box}>isi4</Text>
+              <Text style={styles.box}>isi5</Text>
+            </ScrollView>
+          </View>
+        </View>
 
         {/* Render cards */}
         <View style={styles.view3}>
           <View style={styles.row}>
-            {cardData.slice(0, 3).map((card, index) => renderCard(card, index))}
+            {cardData.slice(0, 3).map((card) => renderCard(card))}
             <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Math</Text>
             <Text style={{ marginRight: 2, marginTop: -50, color: 'black' }}>Islamic</Text>
             <Text style={{ marginRight: 28, marginTop: -50, color: 'black' }}>Science</Text>
@@ -89,19 +89,22 @@ export default function dashboard() {
 
         <View style={styles.view3}>
           <View style={styles.row}>
-            {cardData.slice(3, 6).map((card, index) => renderCard(card, index))}
+            {cardData.slice(3, 6).map((card) => renderCard(card))}
             <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Shop</Text>
             <Text style={{ marginRight: -20, marginTop: -60, color: 'black' }}>Activity</Text>
             <Text style={{ marginRight: 20, marginTop: -60, color: 'black' }}>Savings</Text>
+
           </View>
         </View>
-      </ScrollView>
+      </ScrollView >
 
-      {/* Footer */}
       <View style={styles.fixedFooter}></View>
-    </View>
+    </View >
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -128,6 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
   },
+
   view3: {
     backgroundColor: 'white',
     width: '100%',
@@ -148,8 +152,10 @@ const styles = StyleSheet.create({
     marginLeft: -200,
   },
   scrollContent: {
-    paddingBottom: 80, // Memberikan ruang ekstra di bawah untuk footer tetap
+    paddingBottom: 80,
   },
+
+  //footer
   fixedFooter: {
     position: 'absolute',
     bottom: 0,
@@ -186,6 +192,24 @@ const styles = StyleSheet.create({
   cardBackground: {
     width: 30,
     height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  //view2 content
+  view2_content: {
+    height: "50%",
+    width: "100%",
+    borderRadius: '5%',
+    marginBottom: "-30%",
+  },
+  box: {
+    backgroundColor: '#ffff',
+    margin: 10,
+    padding: 20,
+    borderRadius: 10,
+    width: 200,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
