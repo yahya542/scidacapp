@@ -12,18 +12,19 @@ export default function Dashboard() {
 
   const renderCard = (card) => (
     <TouchableOpacity
+      key = {card.id}
       style={styles.card}
       onPress={() => {
-        if (card.id === '1') { navigation.navigate('fitur/math/db_math'); }
-        else if (card.id === '2') { navigation.navigate('fitur/islamic/db_islamic'); }
-        else if (card.id === '3') { navigation.navigate('fitur/science/db_science'); }
-        else if (card.id === '4') { navigation.navigate('fitur/shop/db_shop'); }
-        else if (card.id === '5') { navigation.navigate('fitur/activity/db_activity'); }
-        else if (card.id === '6') { navigation.navigate('fitur/savings/db_savings'); }
+        if (card.id === '1') { navigation.navigate('db_math'); }
+        else if (card.id === '2') { navigation.navigate('db_islamic'); }
+        else if (card.id === '3') { navigation.navigate('db_science'); }
+        else if (card.id === '4') { navigation.navigate('db_shop'); }
+        else if (card.id === '5') { navigation.navigate('db_activity'); }
+        else if (card.id === '6') { navigation.navigate('db_savings'); }
       }}
     >
       <ImageBackground
-        source={card.image ? card.image : require('../assets/images/scidac.png')}
+        source={card.image ? card.image : require('../../assets/images/scidac.png')}
         style={styles.cardBackground}
         imageStyle={{ borderRadius: 10 }}
       >
@@ -33,12 +34,12 @@ export default function Dashboard() {
   );
 
   const cardData = [
-    { id: '1', image: require('../assets/images/math.png'), },
-    { id: '2', image: require('../assets/images/islamic.png'), },
-    { id: '3', image: require('../assets/images/science.png'), },
-    { id: '4', image: require('../assets/images/store.png'), },
-    { id: '5', image: require('../assets/images/activity.png'), },
-    { id: '6', image: require('../assets/images/money.png'), },
+    { id: '1', image: require('../../assets/images/math.png'), },
+    { id: '2', image: require('../../assets/images/islamic.png'), },
+    { id: '3', image: require('../../assets/images/science.png'), },
+    { id: '4', image: require('../../assets/images/store.png'), },
+    { id: '5', image: require('../../assets/images/activity.png'), },
+    { id: '6', image: require('../../assets/images/money.png'), },
   ];
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export default function Dashboard() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Informasi pengguna */}
         <View style={styles.view1}>
-          <Image source={require('../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
+          <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
             <Text style={{ color: 'white' }}>Hai,</Text>
             <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold' }}>
@@ -98,7 +99,7 @@ export default function Dashboard() {
         </View>
       </ScrollView >
 
-      <View style={styles.fixedFooter}></View>
+  
     </View >
   );
 }
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   view2: {
     backgroundColor: 'lightblue',
     width: '85%',
-    marginTop: -180,
+    marginTop: -140,
     marginLeft: 35,
     height: 250,
     justifyContent: 'center',
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   },
   image1: {
     height: 55,
-    marginTop: 15,
+    marginTop: 45,
     marginLeft: '-85%',
   },
   text1: {

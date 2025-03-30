@@ -27,7 +27,7 @@ const login = () => {
   const handleLogin = async () => {
     try {
       // Kirim request login ke API
-      const response = await fetch('http://192.168.43.62:8000/api/login', {
+      const response = await fetch('http://192.168.164.51:8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const login = () => {
         console.log('Token saved successfully');
 
         // Redirect ke halaman dashboard
-        navigation.navigate('dashboard');
+        navigation.navigate('HomeScreen/Dashboard');
 
       } else {
         const errorMessage = data.detail || 'Login failed';

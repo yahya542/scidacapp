@@ -1,82 +1,72 @@
-import React, {useEffect} from 'react';
-import { Text, View, StyleSheet , Image } from 'react-native';
-import {useNavigation} from 'expo-router'; 
-import { createStackNavigator } from '@react-navigation/stack';
-
-
-
-const Stack = createStackNavigator();
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Untuk cek status login
+import { useRouter } from 'expo-router'; // Menggunakan expo-router untuk navigasi
 
 const Index = () => {
-  const navigation = useNavigation();
+  const [isLogged, setIsLogged] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Menggunakan router untuk navigasi
 
-  // Menggunakan useEffect untuk memulai timer
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate( 'autentikasi/login');  // Navigasi ke halaman Dashboard setelah 3 detik
-    }, 2000);  // Set timer selama 3 detik
+    const checkLoginStatus = async () => {
+      // Mengambil token dari AsyncStorage
+      const token = await AsyncStorage.getItem('access_token');
+      
+      if (token) {
+        setIsLogged(true); // Jika token ada, berarti sudah login
+        router.replace('/_layout'); // Navigasi ke Layout setelah login
+      } else {
+        setIsLogged(false); // Jika tidak ada token, berarti belum login
+        router.replace('/autentikasi/login'); // Navigasi ke halaman login
+      }
 
-    // Cleanup timer ketika komponen unmount
-    return () => clearTimeout(timer);
+      setLoading(false); // Selesai pengecekan, set loading ke false
+    };
 
-}, [navigation]) ; 
+    checkLoginStatus(); // Menjalankan pengecekan status login
+  }, [router]);
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      
-
-      <View style={styles.isi}>
-        <Image
-          source = {require('../assets/images/scidac.png')}
-          style={styles.image}
-          resizeMode='contain'
-        />
-      </View>
+      <Image
+        source={require('../assets/images/scidac.png')}
+        style={styles.image}
+        resizeMode='contain'
+      />
       <Text style={styles.heading}>SCIDAC</Text>
-      <Text style={styles.body}>Science and Daily Activity </Text>
-      
+      <Text style={styles.body}>Science and Daily Activity</Text>
     </View>
   );
 };
 
-<Stack.Navigator screenOptions={{ headerShown: false }} headerMode="none">
-  <Stack.Screen name="index" component={Index} />
-</Stack.Navigator>
-
-
-
-
-
-
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white', 
-    
+    backgroundColor: 'white',
   },
   heading: {
-    marginTop: -30 , 
+    marginTop: -30,
     fontSize: 40,
-    fontWeight: 'bold', 
-    color: "orange", 
+    fontWeight: 'bold',
+    color: "orange",
   },
   body: {
     fontSize: 18,
-    color: "slategray", 
+    color: "slategray",
   },
-  isi: {
-    marginTop:150, 
-    alignItems: 'center',
-    backgroundColor: 'white', 
-    padding: 30,
-    justifyContent:"center", 
-    
-  }, 
   image: {
-    height: 200, 
-  }, 
+    height: 200,
+  },
 });
 
-export default Index; 
+export default Index;

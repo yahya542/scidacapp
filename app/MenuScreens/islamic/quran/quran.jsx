@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, ActivityIndicator, StyleSheet, Image} from 'react-native';
+import { View, FlatList, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
+
+
 
 const quran = () => {
+  const navigation = useNavigation();
   const [data, setData] = useState([]); // Untuk menyimpan data dari API
   const [loading, setLoading] = useState(true); // Untuk status loading
   const [error, setError] = useState(null); // Untuk error jika ada
@@ -43,9 +48,11 @@ const quran = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={data} // Data yang akan ditampilkan
-        keyExtractor={(item) => item.nomor.toString()} // Unik key untuk setiap item
+        data={data} 
+        keyExtractor={(item) => item.nomor.toString()} 
         renderItem={({ item }) => (
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('ayat')}>
           <View style={styles.item}>
             <View style={styles.row}>
             <Text style={styles.nomor}>{item.nomor}</Text>
@@ -53,12 +60,13 @@ const quran = () => {
             <Text style={styles.title}>{item.nama}</Text>
             <Image
                 style={styles.image1}
-                source={require('../../../assets/images/download.png')}
+                source={require('../../../../assets/images/download.png')}
 
             />
             
             </View>
           </View>
+          </TouchableOpacity>
         )}
       />
     </View>

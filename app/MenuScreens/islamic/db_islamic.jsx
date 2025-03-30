@@ -10,7 +10,7 @@ const islamic = () => {
     <ScrollView contentContainerStyle={styles.sv}>
       <View style={styles.container}>
         <View style={styles.view1}>
-          <TouchableOpacity onPress={() => navigation.navigate('fitur/islamic/quran')}>
+          <TouchableOpacity onPress={() => navigation.navigate('surah')}>
             <Image
               style={styles.img1}
               source={require('../../../assets/images/quran.png')}
