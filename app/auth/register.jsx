@@ -37,7 +37,7 @@ export default function register() {
     setLoading(true); // Menampilkan loading
 
     // Kirimkan data ke API
-    fetch('http://0.0.0.0:8000/api/register', {
+    fetch('http://192.168.18.51/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

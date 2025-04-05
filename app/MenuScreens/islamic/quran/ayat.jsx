@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const surah = () => {
+const Ayat = () => {
   return (
     <View>
-      <Text>surah</Text>
+      <Text>ayat</Text>
     </View>
   )
 }
 
-export default surah
+export default Ayat
 
 const styles = StyleSheet.create({})
