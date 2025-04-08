@@ -10,9 +10,9 @@ const Stack = createStackNavigator();
 
 const IslamicLayout = () => {
   return (
-    <Stack.Navigator screenOptions={headershown=false} >
+    <Stack.Navigator screenOptions={{headershown:false, headerStyle: { height: 0, backgroundColor: 'transparent' }, headerLeft: () => null}}>
       {/* Layar utama Islamic */}
-      <Stack.Screen name="Quran" component={IslamicMain} />
+      <Stack.Screen name="Islamic" component={IslamicMain}  />
       {/* Quran */}
       <Stack.Screen name="surah" component={Quran} />
       <Stack.Screen name="ayat" component={Ayat} />

@@ -36,7 +36,7 @@ const DashboardStack = () => (
 export default function Layout() {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false,
+      screenOptions={{ headerShown: false, headerStyle: { height: 0, backgroundColor: 'transparent' },
         tabBarActiveTintColor: 'orange',tabBarInactiveTintColor: 'lightblue',
        }}
       style={styles.tab}  >

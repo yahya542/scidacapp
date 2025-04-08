@@ -52,7 +52,7 @@ const quran = () => {
         keyExtractor={(item) => item.nomor.toString()} 
         renderItem={({ item }) => (
           <TouchableOpacity 
-            onPress={() => navigation.navigate('ayat')}>
+            onPress={() => navigation.navigate('ayat', { id: item.nomor })}>
           <View style={styles.item}>
             <View style={styles.row}>
             <Text style={styles.nomor}>{item.nomor}</Text>
