@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
+import register from './register'; // Import register jika diperlukan
 
 
 
@@ -27,7 +27,7 @@ const login = () => {
   const handleLogin = async () => {
     try {
       // Kirim request login ke API
-      const response = await fetch('http://192.168.18.51:8000/api/login', {
+      const response = await fetch('http://192.168.178.51::8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const login = () => {
     }
   };
   const handleregister = async() =>{
-    navigation.navigate('autentikasi/register')
+    navigation.navigate('register')
   }
 
 

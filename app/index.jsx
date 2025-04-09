@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Untuk cek status login
 import { useNavigation } from '@react-navigation/native'; // Ganti expo-router dengan react-navigation
 import _layout from './navigation/_layout'; 
+import login from './auth/login'; // Import komponen login
+import register from './auth/register'; // Import komponen register
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // Untuk navigasi stack
 
 function Awal() {
@@ -22,7 +24,7 @@ function Awal() {
           navigation.replace('_layout'); // Navigasi ke Layout setelah login
         } else {
           setIsLogged(false); // Jika tidak ada token, berarti belum login
-          navigation.replace('./auth/login'); // Navigasi ke halaman login
+          navigation.replace('login'); // Navigasi ke halaman login
         }
         setLoading(false); // Selesai pengecekan, set loading ke false
       }, 3000); // Tunggu selama 3 detik sebelum melanjutkan navigasi
@@ -51,6 +53,9 @@ function App() {
     <Stack.Navigator initialRouteName='Awal' screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Awal" component={Awal} />
       <Stack.Screen name="_layout" component={_layout} />
+      <Stack.Screen name="login" component={login} />
+      <Stack.Screen name="register" component={register} />
+      {/* Tambahkan screen lain sesuai kebutuhan */}
     </Stack.Navigator>
   );
 }
