@@ -27,7 +27,7 @@ const login = () => {
   const handleLogin = async () => {
     try {
       // Kirim request login ke API
-      const response = await fetch('http://192.168.178.51::8000/api/login', {
+      const response = await fetch('http://deya.my.id/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

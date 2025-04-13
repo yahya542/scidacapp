@@ -1,9 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, StyleSheet, Alert, TouchableOpacity , Navigation} from 'react-native';
-import { createAnimatedPropAdapter } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
 
-export default function register() {
+
+
+export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +15,7 @@ export default function register() {
 
   
 
-  const Stack = createStackNavigator();
+  const navigation = useNavigation();
 
   const handleRegister = () => {
     // Validasi di sisi klien
@@ -37,7 +39,7 @@ export default function register() {
     setLoading(true); // Menampilkan loading
 
     // Kirimkan data ke API
-    fetch('http://192.168.178.51:/api/register', {
+    fetch('http://deya.my.id/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +55,8 @@ export default function register() {
           setErrorMessage(data.message);
           Alert.alert("Error", data.message);
         } else {
-          navigation.navigate('dashboard');
+          navigation.replace('index'); // Ganti dengan nama screen yang sesuai
+          Alert.alert("Success", "Registration successful");
         }
       })
       .catch((error) => {
@@ -62,8 +65,8 @@ export default function register() {
         console.error('Error:', error);
       });
   };
-  const masuklogin = async() => {
-    Navigation.navigate('autentikasi/login')
+  const masuklogin = () => {
+    navigation.navigate('login')
   }
 
   return (

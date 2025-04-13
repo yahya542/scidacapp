@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
 import Dashboard from '../HomeScreen/Dashboard';
-import ProfileScreen from '../screens/ProfileScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import ProfileScreen from '../screens/ProfileScreen/_layout';
+import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import { Ionicons } from 'react-native-vector-icons';
 
 // Import screens
@@ -15,11 +15,13 @@ import Savings from '../MenuScreens/savings/db_savings';
 import Shop from '../MenuScreens/shop/db_shop';
 import Science from '../MenuScreens/science/db_science';
 
+
+
 // Create navigator
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Stack navigator
+// menuscreen
 const DashboardStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Dashboard" component={Dashboard} />
@@ -29,8 +31,11 @@ const DashboardStack = () => (
     <Stack.Screen name="db_savings" component={Savings} />
     <Stack.Screen name="db_shop" component={Shop} />
     <Stack.Screen name="db_science" component={Science} />
+   
   </Stack.Navigator>
 );
+
+//authscreen
 
 // Tab screen
 export default function Layout() {
