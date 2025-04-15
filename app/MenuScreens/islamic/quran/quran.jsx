@@ -32,7 +32,7 @@ const quran = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#red" />
       </View>
     );
   }
@@ -55,17 +55,16 @@ const quran = () => {
             onPress={() => navigation.navigate('ayat', { id: item.nomor })}>
           <View style={styles.item}>
             <View style={styles.row}>
-            <Text style={styles.nomor}>{item.nomor}</Text>
+            <Text >{item.nomor}</Text>
             <Text style={styles.nl}>{item.nama_latin}</Text>
+          
+            </View>
+            <View style={styles.row2}>
             <Text style={styles.title}>{item.nama}</Text>
-            <Image
-                style={styles.image1}
-                source={require('../../../../assets/images/download.png')}
-
-            />
-            
+          
             </View>
           </View>
+          
           </TouchableOpacity>
         )}
       />
@@ -78,55 +77,47 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-    backgroundColor:"#007C6C",
+    backgroundColor:"#21ABA5", 
   },
   row: {
     flexDirection: 'row', // Agar elemen berada dalam satu baris
-    justifyContent: 'space-between', // Memberikan jarak antar elemen
     alignItems: 'center', // Menyelaraskan teks secara vertikal
-   
+    
+  },
+  row2: {
+    flexDirection: 'row', // Agar elemen berada dalam satu baris
+    alignItems: 'flex-end', // Menyelaraskan teks secara vertikal
     
   },
   item: {
-    backgroundColor: 'beige',
+    backgroundColor: 'white',
     padding: 15,
     marginVertical: 8,
     borderRadius: 5,
     elevation: 3, // Untuk shadow
     justifyContent:"space-beetwen",
+    width:"85%",
+    marginBottom:20,
+    marginLeft:"8%",
+    
     
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 24,
-    marginRight:"-30%",
+    fontSize: 20,
+    marginLeft:180,
     color:"#D2B48C",
+    alignItems:"stretch"
   },
   errorText: {
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
   },
-  image1:{
-    height:30, 
-    width:30,
-    borderRadius:5,
-  },
-  nomor:{
-    height:30,
-    width:30,
-    justifyContent:"center", 
-    alignItems:'center',
-    borderRadius:50,
-    paddingLeft:"2%",
-    paddingTop:"1%",
-    borderColor:"#D2B48C",
-    borderWidth:1,
-    color:"#D2B48C",
-
-  },
+  
+  
   nl:{
-    marginLeft:"-30%",
+    marginLeft:10,
     alignItems:"flex-end",
     justifyContent:"flex-end",
   },

@@ -59,7 +59,7 @@ const islamic = () => {
 const styles = StyleSheet.create({
   sv: {
     flexGrow: 1,
-    backgroundColor: "#007C6C", // Background untuk ScrollView
+    backgroundColor: "#21aba5", // Background untuk ScrollView
   },
   container: {
     alignItems: 'center',
@@ -75,7 +75,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 30,
     borderWidth: 5,
-    borderColor: '#D2B48C',
+    borderColor: 'beige',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: '#fff',
   },
   img1: {
     height: 80,

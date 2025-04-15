@@ -66,8 +66,8 @@ export default function Dashboard() {
         </View>
 
         {/* Pop-up informasi */}
-        <View style={styles.view2}>
-          <View style={styles.view2_content}>
+        <View>
+         
             <ScrollView horizontal={true} ref={ref}>
               <Text style={styles.box}>isi1</Text>
               <Text style={styles.box}>isi2</Text>
@@ -75,7 +75,7 @@ export default function Dashboard() {
               <Text style={styles.box}>isi4</Text>
               <Text style={styles.box}>isi5</Text>
             </ScrollView>
-          </View>
+         
         </View>
 
         {/* Render cards */}
@@ -123,19 +123,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
    
   },
-  view2: {
-    backgroundColor: 'orange',
-    width: '85%',
-    marginTop: -140,
-    marginLeft: 35,
-    height: 250,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 30,
-    borderColor: 'orange',
-    borderStyle: 'solid',
-    borderWidth: 5
-  },
+ 
   
   view3: {
     backgroundColor: 'white',
@@ -144,7 +132,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: -1,
     padding: 10,
-    marginBottom: -40,
+    marginBottom: -30,
   },
   image1: {
     height: 55,
@@ -157,23 +145,11 @@ const styles = StyleSheet.create({
     marginLeft: -200,
   },
   scrollContent: {
-    paddingBottom: 80,
+    paddingBottom: 20,
   },
 
   //footer
-  fixedFooter: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '12%',
-    borderRadius: 20,
-  },
+  
   card: {
     width: '20%', // Menyesuaikan lebar card menjadi 1/3 dari layar
     height: 100,
@@ -192,7 +168,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap', // Membuat baris baru jika tidak cukup ruang
+    flexWrap: 'wrap', 
   },
   cardBackground: {
     width: 30,
@@ -201,21 +177,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  //view2 content
-  view2_content: {
-    height: "50%",
-    width: "100%",
-    borderRadius: '5%',
-    marginBottom: "-30%",
-  },
+  
   box: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'orange',
     margin: 10,
     padding: 20,
     borderRadius: 10,
-    width: 170,
-    height: 85,
+    width: 200,
+    height: 95,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
   },
 });
