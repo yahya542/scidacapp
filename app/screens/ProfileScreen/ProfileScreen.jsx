@@ -2,18 +2,27 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import Tombol from '../../../component/tombol';
 import { useNavigation } from '@react-navigation/native';
-import LogoutScreen from './LogoutScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 function ProfileScreen () {
   const navigation = useNavigation();
 
-  const handleLogout = () => {
-    navigation.navigate('logout');  // Ensure this matches the name in your navigator
-  };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('access_token');
+      console.log('Token removed successfully');
+      Alert.alert('Logout Berhasil');
+      navigation.replace('index');
+    } catch (e) {
+      console.error('logout erorr', e);
+      Alert.alert('Maaf logout gagal');
+    } 
+  }
 
   return (
     <View style={styles.container}>
-      <Tombol onpress={handleLogout}  name="Logout" />
+      <Tombol onPress={handleLogout}  name="Logout" />
     </View>
   );
 }
@@ -28,3 +37,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
   },
 });
+
+ 

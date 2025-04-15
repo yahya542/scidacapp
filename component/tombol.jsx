@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-function tombol ({name, onpress} ) {
+function tombol ({name, onPress} ) {
   return (
     <View>
-      <TouchableOpacity style={styles.button} onPress={onpress} >
+      <TouchableOpacity style={styles.button} onPress={onPress} >
         <Text style={styles.buttonText}> {name} </Text>
       </TouchableOpacity>
     </View>

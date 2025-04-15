@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   view1: {
-    backgroundColor: 'orange',
+    backgroundColor: 'lightblue',
     width: '100%',
     height: 250,
     justifyContent: 'top',
@@ -121,9 +121,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 30,
+   
   },
   view2: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'orange',
     width: '85%',
     marginTop: -140,
     marginLeft: 35,
@@ -131,8 +132,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
+    borderColor: 'orange',
+    borderStyle: 'solid',
+    borderWidth: 5
   },
-
+  
   view3: {
     backgroundColor: 'white',
     width: '100%',
@@ -205,12 +209,12 @@ const styles = StyleSheet.create({
     marginBottom: "-30%",
   },
   box: {
-    backgroundColor: '#ffff',
+    backgroundColor: 'lightblue',
     margin: 10,
     padding: 20,
     borderRadius: 10,
-    width: 200,
-    height: 100,
+    width: 170,
+    height: 85,
     justifyContent: 'center',
     alignItems: 'center',
   },

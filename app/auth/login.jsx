@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import register from './register'; // Import register jika diperlukan
+import _layout from '../navigation/_layout'; 
 
 
 
-const login = () => {
+
+
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,15 +41,15 @@ const login = () => {
       console.log('Response Status:', response.status);  // Cek status code dari respons
       console.log('Response Data:', data);  // Cek data yang diterima
 
-      if (response.ok && data.access_token) {
-        const { access_token } = data;
+      if (response.ok && data.token) {
+        const { token } = data;
 
         // Simpan token ke AsyncStorage
-        await AsyncStorage.setItem('access_token', access_token);
+        await AsyncStorage.setItem('access_token', token);
         console.log('Token saved successfully');
 
         // Redirect ke halaman dashboard
-        navigation.navigate('HomeScreen/Dashboard');
+        navigation.navigate('_layout');
 
       } else {
         const errorMessage = data.detail || 'Login failed';
@@ -170,4 +172,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default login;
+export default Login;
