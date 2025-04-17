@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ImageBackg
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -50,10 +51,53 @@ export default function Dashboard() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    console.log('useEffect dipanggil');
+    const fetchUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token'); 
+        console.log('Token:', token); 
+        if (!token) {
+          console.log('Token tidak ditemukan!');
+          // Tindakan lain misalnya logout atau navigasi ke login
+          return;
+        }
+
+
+
+
+
+        const response = await fetch('http://deya.my.id/api/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Failed to fetch data:', response.status);
+          return;
+        }
+        
+
+
+        const json = await response.json();
+        setUser(json.user);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchUser();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" headershown={false} />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View
+     style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      <ScrollView contentContainerStyle={styles.scrollContent} >
         {/* Informasi pengguna */}
         <View style={styles.view1}>
           <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
@@ -66,7 +110,7 @@ export default function Dashboard() {
         </View>
 
         {/* Pop-up informasi */}
-        <View>
+        <View style={styles.view2}>
          
             <ScrollView horizontal={true} ref={ref}>
               <Text style={styles.box}>isi1</Text>
@@ -107,23 +151,36 @@ export default function Dashboard() {
 
 
 
+
+
+
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: '100%',
+    flex:1
+   
   },
   view1: {
     backgroundColor: 'lightblue',
-    width: '100%',
+    width: '90%',
     height: 250,
     justifyContent: 'top',
     alignItems: 'center',
     marginBottom: 20,
-    borderBottomRightRadius: 30,
-    borderBottomLeftRadius: 30,
+    borderRadius:30,
+    paddingTop: StatusBar.currentHeight,
+    margin: 20,
    
   },
- 
+  view2:{
+    width: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: "5%",
+    borderRadius: 70,
+    
+  },
   
   view3: {
     backgroundColor: 'white',

@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F8FF',
   },
   surahInfo: {
-    backgroundColor: '#fff',
+    backgroundColor: '#21ABA5',
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   ayatBox: {
-    backgroundColor: '#fff',
+    backgroundColor: 'beige',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,

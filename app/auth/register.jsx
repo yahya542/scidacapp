@@ -2,13 +2,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, StyleSheet, Alert, TouchableOpacity , Navigation} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password1, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,11 +20,11 @@ export default function Register() {
 
   const handleRegister = () => {
     // Validasi di sisi klien
-    if (password !== password2) {
+    if (password1 !== password2) {
       Alert.alert("Error", "maaf konfirmasi password yang dimasukkan tidak valid ");
       return;
     }
-    if (password.length < 8) {
+    if (password1.length < 8) {
       Alert.alert("Error", "Password harus lebih dari 8 character");
       return;
     }
@@ -32,7 +33,7 @@ export default function Register() {
     const data = {
       username,
       email,
-      password,
+      password1,
       password2,
     };
 
@@ -47,8 +48,9 @@ export default function Register() {
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
-      .then((data) => {
-        setLoading(false); // Matikan loading
+      .then( async (data) => {
+        setLoading(false); 
+        console.log('Response register:', data);
 
         // Cek apakah ada error dari backend
         if (data.message) {
@@ -90,7 +92,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          value={password}
+          value={password1}
           onChangeText={setPassword}
           secureTextEntry
         />
