@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-    backgroundColor:"#21ABA5", 
+    backgroundColor:"#ffff",  
   },
   row: {
     flexDirection: 'row', // Agar elemen berada dalam satu baris
@@ -91,14 +91,22 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: 'white',
-    padding: 15,
+    padding: 10,
     marginVertical: 8,
     borderRadius: 5,
-    elevation: 3, // Untuk shadow
     justifyContent:"space-beetwen",
     width:"85%",
     marginBottom:20,
     marginLeft:"8%",
+    borderColor:"#21ABA5",
+    borderStyle:"solid",
+    elevation: 3,
+    borderWidth: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     
     
   },

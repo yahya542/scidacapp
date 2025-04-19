@@ -28,7 +28,7 @@ const islamic = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.view1}>
-          <TouchableOpacity>
+          <TouchableOpacity  onPress={() => navigation.navigate('shalat')}   >
             <Image
               style={styles.img2}
               source={require('../../../assets/images/praying.png')}
@@ -59,7 +59,7 @@ const islamic = () => {
 const styles = StyleSheet.create({
   sv: {
     flexGrow: 1,
-    backgroundColor: "#21aba5", // Background untuk ScrollView
+    backgroundColor: "#ffff", // Background untuk ScrollView */
   },
   container: {
     alignItems: 'center',
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 30,
     borderWidth: 5,
-    borderColor: 'beige',
+    borderColor: '#21aba5',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

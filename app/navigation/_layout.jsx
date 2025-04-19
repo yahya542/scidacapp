@@ -12,7 +12,7 @@ import Math from '../MenuScreens/math/db_math';
 import Islamic from '../MenuScreens/islamic/_layout';
 import Activity from '../MenuScreens/activity/db_activity';
 import Savings from '../MenuScreens/savings/db_savings';
-import Shop from '../MenuScreens/shop/db_shop';
+import Read from '../MenuScreens/read/db_read';
 import Science from '../MenuScreens/science/db_science';
 
 
@@ -29,7 +29,7 @@ const DashboardStack = () => (
     <Stack.Screen name="db_islamic" component={Islamic} />
     <Stack.Screen name="db_activity" component={Activity} />
     <Stack.Screen name="db_savings" component={Savings} />
-    <Stack.Screen name="db_shop" component={Shop} />
+    <Stack.Screen name="db_read" component={Read} />
     <Stack.Screen name="db_science" component={Science} />
    
   </Stack.Navigator>

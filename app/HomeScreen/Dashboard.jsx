@@ -19,7 +19,7 @@ export default function Dashboard() {
         if (card.id === '1') { navigation.navigate('db_math'); }
         else if (card.id === '2') { navigation.navigate('db_islamic'); }
         else if (card.id === '3') { navigation.navigate('db_science'); }
-        else if (card.id === '4') { navigation.navigate('db_shop'); }
+        else if (card.id === '4') { navigation.navigate('db_read'); }
         else if (card.id === '5') { navigation.navigate('db_activity'); }
         else if (card.id === '6') { navigation.navigate('db_savings'); }
       }}
@@ -38,7 +38,7 @@ export default function Dashboard() {
     { id: '1', image: require('../../assets/images/math.png'), },
     { id: '2', image: require('../../assets/images/islamic.png'), },
     { id: '3', image: require('../../assets/images/science.png'), },
-    { id: '4', image: require('../../assets/images/store.png'), },
+    { id: '4', image: require('../../assets/images/read.png'), },
     { id: '5', image: require('../../assets/images/activity.png'), },
     { id: '6', image: require('../../assets/images/money.png'), },
   ];
@@ -118,6 +118,7 @@ export default function Dashboard() {
               <Text style={styles.box}>isi3</Text>
               <Text style={styles.box}>isi4</Text>
               <Text style={styles.box}>isi5</Text>
+              <Text style={styles.box}>isi6</Text>
             </ScrollView>
          
         </View>
@@ -135,7 +136,7 @@ export default function Dashboard() {
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(3, 6).map((card) => renderCard(card))}
-            <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Shop</Text>
+            <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Read</Text>
             <Text style={{ marginRight: -20, marginTop: -60, color: 'black' }}>Activity</Text>
             <Text style={{ marginRight: 20, marginTop: -60, color: 'black' }}>Savings</Text>
 
@@ -164,13 +165,14 @@ const styles = StyleSheet.create({
   view1: {
     backgroundColor: 'lightblue',
     width: '90%',
-    height: 250,
+    height: 240,
     justifyContent: 'top',
     alignItems: 'center',
     marginBottom: 20,
     borderRadius:30,
     paddingTop: StatusBar.currentHeight,
     margin: 20,
+   
    
   },
   view2:{

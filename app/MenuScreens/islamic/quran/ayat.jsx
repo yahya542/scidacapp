@@ -42,7 +42,7 @@ const Ayat = ({ route }) => {
           <Text style={styles.title}>
            {surahInfo?.nama_latin} ({surahInfo?.nama})
           </Text>
-          <Text>Surah ke : {surahInfo?.nomor}</Text>
+          <Text >Surah ke : {surahInfo?.nomor}</Text>
           <Text>Jumlah Ayat: {surahInfo?.jumlah_ayat}</Text>
         </View>
 
