@@ -16,11 +16,11 @@ export default tombol
 const styles = StyleSheet.create({
    
     button: {
-        backgroundColor: 'orange',
+        backgroundColor: 'orange  ',
         padding: 10,
         borderRadius: 10,
         alignItems: 'center',
-        marginTop: -380,
+        marginTop: -160,
         marginLeft:"70%"
     },
     buttonText: {
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     img:{
-      height:20,
-      width:20,
+      height:35,
+      width:35,
       
     }
 })

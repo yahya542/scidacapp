@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import Logout from '../../../component/logout';
+import Garis from '../../../component/horizontal';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
@@ -24,9 +25,17 @@ function ProfileScreen () {
     <View style={styles.container}>
       <View style={styles.wrap}>
         <Logout  onPress={handleLogout}  name="Logout"  />
-        <View>
-          
+        <View style={styles.foto}>
         </View>
+        <Garis/>
+        <Text style={styles.bio} >Username:</Text>
+        <Garis></Garis>
+        <Text style={styles.bio} >No Hp: </Text>
+        <Garis></Garis>
+        <Text style={styles.bio}>Alamat: </Text>
+        <Garis></Garis>
+        <Text style={styles.bio}>Email:</Text>
+        <Garis></Garis>
       </View>
     </View>
   );
@@ -35,6 +44,7 @@ function ProfileScreen () {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
+  //top
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -43,10 +53,10 @@ const styles = StyleSheet.create({
   },
   wrap: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "flex-start",
+    alignItems:"center",
     backgroundColor: 'white',
-    marginTop: 80,
+    marginTop: 180,
     width: '100%',
     borderRadius: 50,
     marginBottom:-50,
@@ -59,6 +69,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+
+  //mid 
+  foto:{
+    height:150,
+    width:150,
+    backgroundColor:"orange",
+    borderRadius:100,
+    marginTop:-100,
+  },
+  bio:{
+    marginLeft:-150,
+    marginTop:20,
+  },
+  
+
+
+
 });
 
  
