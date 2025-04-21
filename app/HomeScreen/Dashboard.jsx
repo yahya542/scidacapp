@@ -3,6 +3,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackgroundImage from "../../component/fullBackground"
+
+
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -10,10 +13,12 @@ export default function Dashboard() {
   const navigation = useNavigation();  // Menggunakan useNavigation dengan benar
 
   const ref = useRef(null);
+  const scrollPosition = useRef(0);
+  const scrollWidth = useRef(0);
 
   const renderCard = (card) => (
     <TouchableOpacity
-      key = {card.id}
+      key={card.id}
       style={styles.card}
       onPress={() => {
         if (card.id === '1') { navigation.navigate('db_math'); }
@@ -37,26 +42,37 @@ export default function Dashboard() {
   const cardData = [
     { id: '1', image: require('../../assets/images/math.png'), },
     { id: '2', image: require('../../assets/images/islamic.png'), },
-    { id: '3', image: require('../../assets/images/science.png'), },
+    { id: '3', image: require('../../assets/images/kids.png'), },
     { id: '4', image: require('../../assets/images/read.png'), },
     { id: '5', image: require('../../assets/images/activity.png'), },
     { id: '6', image: require('../../assets/images/money.png'), },
   ];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      ref.current?.scrollTo({ x: 300, animated: true });
-    }, 2000);
+    const interval = setInterval(() => {
+      if (ref.current && scrollWidth.current > 0) {
+        scrollPosition.current += 1;
 
-    return () => clearTimeout(timer);
+        ref.current.scrollTo({
+          x: scrollPosition.current,
+          animated: false,
+        });
+
+
+        if (scrollPosition.current >= scrollWidth.current) {
+          scrollPosition.current = 0;
+        }
+      }
+    }, 16);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     console.log('useEffect dipanggil');
     const fetchUser = async () => {
       try {
-        const token = await AsyncStorage.getItem('token'); 
-        console.log('Token:', token); 
+        const token = await AsyncStorage.getItem('token');
+        console.log('Token:', token);
         if (!token) {
           console.log('Token tidak ditemukan!');
           // Tindakan lain misalnya logout atau navigasi ke login
@@ -78,7 +94,7 @@ export default function Dashboard() {
           console.error('Failed to fetch data:', response.status);
           return;
         }
-        
+
 
 
         const json = await response.json();
@@ -89,13 +105,13 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
-  
+
     fetchUser();
   }, []);
 
   return (
     <View
-     style={styles.container}>
+      style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <ScrollView contentContainerStyle={styles.scrollContent} >
         {/* Informasi pengguna */}
@@ -111,25 +127,44 @@ export default function Dashboard() {
 
         {/* Pop-up informasi */}
         <View style={styles.view2}>
-         
-            <ScrollView horizontal={true} ref={ref}>
-              <Text style={styles.box}>isi1</Text>
-              <Text style={styles.box}>isi2</Text>
-              <Text style={styles.box}>isi3</Text>
-              <Text style={styles.box}>isi4</Text>
-              <Text style={styles.box}>isi5</Text>
-              <Text style={styles.box}>isi6</Text>
-            </ScrollView>
-         
-        </View>
 
-        {/* Render cards */}
+          <ScrollView
+            horizontal={true}
+            ref={ref}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onContentSizeChange={(w, h) => {
+              scrollWidth.current = w; }}>
+            <BackgroundImage image={require('../../assets/images/isi.jpg')}  borderRadius={30} >
+              <Text style={styles.box}   ></Text>
+            </BackgroundImage>
+            <BackgroundImage image={require('../../assets/images/isi1.jpg')}>
+              <Text style={styles.box}></Text>
+            </BackgroundImage>
+            <BackgroundImage image={require('../../assets/images/isi2.jpg')}>
+              <Text style={styles.box}></Text>
+            </BackgroundImage>
+            <BackgroundImage image={require('../../assets/images/isi3.jpg')}>
+              <Text style={styles.box}></Text>
+            </BackgroundImage>
+            <BackgroundImage image={require('../../assets/images/isi4.jpg')}>
+              <Text style={styles.box}></Text>
+            </BackgroundImage>
+            <BackgroundImage image={require('../../assets/images/isi5.jpg')}>
+              <Text style={styles.box}></Text>
+            </BackgroundImage>
+
+          </ScrollView>
+
+    </View>
+
+        {/* Render cards */ }
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map((card) => renderCard(card))}
             <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Math</Text>
             <Text style={{ marginRight: 2, marginTop: -50, color: 'black' }}>Islamic</Text>
-            <Text style={{ marginRight: 28, marginTop: -50, color: 'black' }}>Science</Text>
+            <Text style={{ marginRight: 38, marginTop: -50, color: 'black' }}>Kids</Text>
           </View>
         </View>
 
@@ -144,7 +179,7 @@ export default function Dashboard() {
         </View>
       </ScrollView >
 
-  
+
     </View >
   );
 }
@@ -159,8 +194,8 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    flex:1
-   
+    flex: 1
+
   },
   view1: {
     backgroundColor: 'lightblue',
@@ -169,21 +204,21 @@ const styles = StyleSheet.create({
     justifyContent: 'top',
     alignItems: 'center',
     marginBottom: 20,
-    borderRadius:30,
+    borderRadius: 30,
     paddingTop: StatusBar.currentHeight,
     margin: 20,
-   
-   
+
+
   },
-  view2:{
+  view2: {
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: "5%",
     borderRadius: 70,
-    
+
   },
-  
+
   view3: {
     backgroundColor: 'white',
     width: '100%',
@@ -208,7 +243,7 @@ const styles = StyleSheet.create({
   },
 
   //footer
-  
+
   card: {
     width: '20%', // Menyesuaikan lebar card menjadi 1/3 dari layar
     height: 100,
@@ -227,7 +262,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
   },
   cardBackground: {
     width: 30,
@@ -236,14 +271,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  
+
   box: {
-    backgroundColor: 'orange',
+
     margin: 10,
     padding: 20,
     borderRadius: 10,
     width: 200,
-    height: 95,
+    height: 75,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,

@@ -3,6 +3,7 @@ import React from 'react';
 import Logout from '../../../component/logout';
 import Garis from '../../../component/horizontal';
 import { useNavigation } from '@react-navigation/native';
+import Edit from '../../../component/edit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
@@ -20,10 +21,14 @@ function ProfileScreen () {
       Alert.alert('Maaf logout gagal');
     } 
   }
+  const handleEdit = () => {
+    navigation.navigate('EditProfile');
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.wrap}>
+        <Edit onPress={handleEdit}  name="Edit"  />
         <Logout  onPress={handleLogout}  name="Logout"  />
         <View style={styles.foto}>
         </View>
@@ -82,6 +87,7 @@ const styles = StyleSheet.create({
   bio:{
     marginLeft:-150,
     marginTop:20,
+    color:"orange",
   },
   
 

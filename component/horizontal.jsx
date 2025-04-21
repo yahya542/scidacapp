@@ -11,7 +11,7 @@ export default horizontal
 
 const style = StyleSheet.create({
     garis:{
-        borderBottomColor: '#ccc',
+        borderBottomColor: 'beige',
         borderBottomWidth: 2,
         marginVertical: 10,
         width:"80%",
