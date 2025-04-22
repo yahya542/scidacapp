@@ -21,9 +21,9 @@ export default function Dashboard() {
       key={card.id}
       style={styles.card}
       onPress={() => {
-        if (card.id === '1') { navigation.navigate('db_math'); }
+        if (card.id === '1') { navigation.navigate('db_study'); }
         else if (card.id === '2') { navigation.navigate('db_islamic'); }
-        else if (card.id === '3') { navigation.navigate('db_science'); }
+        else if (card.id === '3') { navigation.navigate('db_kids'); }
         else if (card.id === '4') { navigation.navigate('db_read'); }
         else if (card.id === '5') { navigation.navigate('db_activity'); }
         else if (card.id === '6') { navigation.navigate('db_savings'); }
@@ -40,12 +40,12 @@ export default function Dashboard() {
   );
 
   const cardData = [
-    { id: '1', image: require('../../assets/images/math.png'), },
+    { id: '1', image: require('../../assets/images/study.png'), },
     { id: '2', image: require('../../assets/images/islamic.png'), },
     { id: '3', image: require('../../assets/images/kids.png'), },
     { id: '4', image: require('../../assets/images/read.png'), },
     { id: '5', image: require('../../assets/images/activity.png'), },
-    { id: '6', image: require('../../assets/images/money.png'), },
+    { id: '6', image: require('../../assets/images/saving.png'), },
   ];
 
   useEffect(() => {
@@ -162,7 +162,7 @@ export default function Dashboard() {
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map((card) => renderCard(card))}
-            <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Math</Text>
+            <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Study</Text>
             <Text style={{ marginRight: 2, marginTop: -50, color: 'black' }}>Islamic</Text>
             <Text style={{ marginRight: 38, marginTop: -50, color: 'black' }}>Kids</Text>
           </View>
@@ -173,7 +173,7 @@ export default function Dashboard() {
             {cardData.slice(3, 6).map((card) => renderCard(card))}
             <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Read</Text>
             <Text style={{ marginRight: -20, marginTop: -60, color: 'black' }}>Activity</Text>
-            <Text style={{ marginRight: 20, marginTop: -60, color: 'black' }}>Savings</Text>
+            <Text style={{ marginRight: 36, marginTop: -60, color: 'black' }}>Saving</Text>
 
           </View>
         </View>

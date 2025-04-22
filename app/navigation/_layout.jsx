@@ -8,12 +8,14 @@ import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import { Ionicons } from 'react-native-vector-icons';
 
 // Import screens
-import Math from '../MenuScreens/math/db_math';
+import Study from '../MenuScreens/study/db_study';
 import Islamic from '../MenuScreens/islamic/_layout';
 import Activity from '../MenuScreens/activity/db_activity';
 import Savings from '../MenuScreens/savings/db_savings';
 import Read from '../MenuScreens/read/db_read';
-import Science from '../MenuScreens/science/db_science';
+import Kids from '../MenuScreens/kids/db_kids';
+
+import CustomTabButton from '../../component/CustomTabButton';
 
 
 
@@ -25,12 +27,12 @@ const Tab = createBottomTabNavigator();
 const DashboardStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Dashboard" component={Dashboard} />
-    <Stack.Screen name="db_math" component={Math} />
+    <Stack.Screen name="db_study" component={Study} />
     <Stack.Screen name="db_islamic" component={Islamic} />
     <Stack.Screen name="db_activity" component={Activity} />
     <Stack.Screen name="db_savings" component={Savings} />
     <Stack.Screen name="db_read" component={Read} />
-    <Stack.Screen name="db_science" component={Science} />
+    <Stack.Screen name="db_kids" component={Kids} />
    
   </Stack.Navigator>
 );
@@ -46,17 +48,8 @@ export default function Layout() {
        }}
       style={styles.tab}  >
 
-      {/* Tab Dashboard */}
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardStack} 
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size}/>   ),
-          }}
-      />
-      
-      {/* Tab Profile */ }
+
+        {/* Tab Profile */ }
       < Tab.Screen 
       name="Profile" 
       component={ ProfileScreen }
@@ -66,6 +59,21 @@ export default function Layout() {
         ),
       }} />
 
+
+      {/* Tab Dashboard */}
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardStack} 
+        options={{
+          tabBarIcon: ({ color, size , focused}) => (
+            <Ionicons name="home" color={color} size={size}/>   ),
+            tabBarButton: (props) => (
+              <CustomTabButton {...props} />
+            ),
+          }}
+      />
+      
+      
      
 
 
