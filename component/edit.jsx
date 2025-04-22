@@ -22,15 +22,16 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       alignItems: 'flex-start',
       marginTop: -160,
-      marginLeft:"-40%"
+      marginLeft:"50%"
   },
   buttonText: {
       color: 'white',
       fontSize: 16,
   },
   img:{
-    height:35,
-    width:35,
+    height:30,
+    width:30,
+    marginTop:2,
     
   }
 })

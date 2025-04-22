@@ -119,7 +119,7 @@ export default function Dashboard() {
           <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
             <Text style={{ color: 'white' }}>Hai,</Text>
-            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold' }}>
+            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold',  }}>
               {user && user.username ? user.username : "User"}
             </Text>
           </View>

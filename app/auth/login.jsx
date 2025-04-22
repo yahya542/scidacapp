@@ -45,7 +45,7 @@ const Login = () => {
         const { token } = data;
 
         // Simpan token ke AsyncStorage
-        await AsyncStorage.setItem('access_token', token);
+        await AsyncStorage.setItem('token', token);
         console.log('Token saved successfully');
 
         // Redirect ke halaman dashboard

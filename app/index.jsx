@@ -37,8 +37,8 @@ function Awal() {
     return (
       <View style={styles.container}>
         <Image source={require('../assets/images/scidac.png')} style={styles.image} resizeMode='contain' />
-        <Text style={styles.heading}>SCIDAC</Text>
-        <Text style={styles.body}>Science and Daily Activity</Text>
+        <Text style={styles.heading}>SIDAC</Text>
+        <Text style={styles.body}>Study Islamicand Daily Activity</Text>
       </View>
     );
   }

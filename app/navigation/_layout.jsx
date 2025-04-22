@@ -43,6 +43,7 @@ const DashboardStack = () => (
 export default function Layout() {
   return (
     <Tab.Navigator
+      initialRouteName="Dashboard"
       screenOptions={{ headerShown: false, headerStyle: { height: 0, backgroundColor: 'transparent' },
         tabBarActiveTintColor: 'orange',tabBarInactiveTintColor: 'lightblue',
        }}
