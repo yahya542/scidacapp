@@ -39,7 +39,7 @@ const islamic = () => {
         <View style={styles.view1}>
           <TouchableOpacity>
             <Image
-              style={styles.img2}
+              style={styles.img3}
               source={require('../../../assets/images/kalender.png')}
             />
             <Text style={styles.text1}>Kalender Hijriyah</Text>
@@ -87,24 +87,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   img1: {
-    height: 80,
-    width: 80,
+    height: 50,
+    width: 50,
     justifyContent: "center",
     alignItems:"center",
   },
   img2:{
-    height: 80,
-    width: 80,
+    height: 50,
+    width: 50,
     justifyContent: "center",
     alignItems:"center",
-    marginLeft:"18%"
+    marginLeft:"20%"
+
+
+  },
+  img3:{
+    height: 50,
+    width: 50,
+    justifyContent: "center",
+    alignItems:"center",
+    marginLeft:"27%"
+
 
   },
   text1: {
     marginTop: 10,
     fontSize: 20,
     fontWeight: 'bold', // Perbaiki penulisan fontWeight
-    marginLeft: "3%",
+   
   },
 
 });

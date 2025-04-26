@@ -12,7 +12,7 @@ function ProfileScreen () {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('access_token');
+      await AsyncStorage.removeItem('token');
       console.log('Token removed successfully');
       Alert.alert('Logout Berhasil');
       navigation.replace('index');
@@ -34,6 +34,7 @@ function ProfileScreen () {
         </View>
         <Garis/>
         <Text style={styles.bio} >Username:</Text>
+        
         <Garis></Garis>
         <Text style={styles.bio} >No Hp: </Text>
         <Garis></Garis>

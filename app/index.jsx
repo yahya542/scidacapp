@@ -15,7 +15,7 @@ function Awal() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       // Mulai pengecekan token saat komponen dimuat
-      const token = await AsyncStorage.getItem('access_token');
+      const token = await AsyncStorage.getItem('token');
       
       // Tunggu selama 3 detik (3000 ms) setelah pengecekan selesai
       setTimeout(() => {

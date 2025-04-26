@@ -1,11 +1,13 @@
-import { StyleSheet,  View } from 'react-native'
+import { StyleSheet,  View, Image } from 'react-native'
 import React from 'react'
 
 const SettingsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.lingkaran}>
-      <View style={styles.cutout}></View>
+      <View style={styles.cutout}>
+        <Image source={require('../../../assets/images/night.png')}  style={styles.img1}  />
+      </View>
       </View>
     </View>
   )
@@ -33,6 +35,12 @@ const styles = StyleSheet.create({
     marginTop: "150%",
     zIndex: 10,
     
-  }, 
+  },
+  img1:{
+    height:80,
+    width:80,
+    marginLeft:"40%",
+    marginTop:"-10%"
+  } 
 
 })

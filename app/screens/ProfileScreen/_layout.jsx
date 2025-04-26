@@ -4,8 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 // import file on this directory
 import ProfileScreen from './ProfileScreen'
-import login from '../../auth/login'
 import Edit from './EditProfile'
+import login from '../../auth/login'
 
 
 const stack = createStackNavigator()
