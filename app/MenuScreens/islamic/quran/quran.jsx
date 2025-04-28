@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import { View, FlatList, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -7,11 +7,13 @@ import { useNavigation } from '@react-navigation/native';
 
 const quran = () => {
   const navigation = useNavigation();
-  const [data, setData] = useState([]); // Untuk menyimpan data dari API
-  const [loading, setLoading] = useState(true); // Untuk status loading
-  const [error, setError] = useState(null); // Untuk error jika ada
+  const [data, setData] = useState([]); // save data api 
+  const [filter, setFilter] = useState([]); // result filter
+  const [search, setSearch] = useState(''); // search input 
+  const [loading, setLoading] = useState(true); // loading
+  const [error, setError] = useState(null); // error
 
-  // Mengambil data dari API ketika komponen pertama kali dimuat
+  // firts time api
   useEffect(() => {
     fetchData();
   }, []);
@@ -20,11 +22,12 @@ const quran = () => {
     try {
       const response = await fetch('https://quran-api.santrikoding.com/api/surah');
       const jsonData = await response.json();
-      setData(jsonData); // Menyimpan data dari API ke state
-      setLoading(false); // Set loading false setelah data selesai diambil
+      setData(jsonData); // save API to state
+      setFilter(jsonData);
+      setLoading(false);
     } catch (error) {
-      setError(error.message); // Menangani error
-      setLoading(false); // Set loading false jika terjadi error
+      setError(error.message); // error
+      setLoading(false);
     }
   };
 
@@ -45,26 +48,78 @@ const quran = () => {
     );
   }
 
+  //backtracking 
+  const backtracking = (list, query) => {
+    let results = [];
+
+    const byself = (index) => {
+      if (index >= list.length) return;
+
+      const item = list[index];
+      if (matches(item.nama_latin.toLowerCase(), query.toLowerCase())) {
+        results.push(item);
+      }
+      byself(index + 1);
+    };
+
+    const matches = (name, query) => {
+      if (query.length === 0) return true;
+      if (name.length === 0) return false;
+      if (name[0] === query[0]) {
+      return matches(name.slice(1), query.slice(1)); // cocok huruf demi huruf
+        } else {
+          return false; // tidak cocok, berhenti
+        }
+      };
+
+    byself(0);
+    return results;
+  };
+
+
+  const handleSearch = (text) => {
+    setSearch(text);
+
+
+    if (text === '') {
+      setFilter(data);
+    }
+    else {
+      const results = backtracking(data, text); // cari dengan backtracking
+      setFilter(results);
+    } 
+  };
+
   return (
     <View style={styles.container}>
+
+      <TextInput
+        style={styles.searchBox}
+        placeholder="Cari Surah..."
+        value={search}
+        onChangeText={handleSearch}
+      />
+
+
+
       <FlatList
-        data={data} 
-        keyExtractor={(item) => item.nomor.toString()} 
+        data={filter}
+        keyExtractor={(item) => item.nomor.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => navigation.navigate('ayat', { id: item.nomor })}>
-          <View style={styles.item}>
-            <View style={styles.row}>
-            <Text >{item.nomor}</Text>
-            <Text style={styles.nl}>{item.nama_latin}</Text>
-          
+            <View style={styles.item}>
+              <View style={styles.row}>
+                <Text >{item.nomor}</Text>
+                <Text style={styles.nl}>{item.nama_latin}</Text>
+
+              </View>
+              <View style={styles.row2}>
+                <Text style={styles.title}>{item.nama}</Text>
+
+              </View>
             </View>
-            <View style={styles.row2}>
-            <Text style={styles.title}>{item.nama}</Text>
-          
-            </View>
-          </View>
-          
+
           </TouchableOpacity>
         )}
       />
@@ -77,29 +132,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-    backgroundColor:"#ffff",  
+    backgroundColor: "#ffff",
   },
   row: {
-    flexDirection: 'row', // Agar elemen berada dalam satu baris
-    alignItems: 'center', // Menyelaraskan teks secara vertikal
-    
+    flexDirection: 'row',
+    alignItems: 'center',
+
   },
   row2: {
-    flexDirection: 'row', // Agar elemen berada dalam satu baris
-    alignItems: 'flex-end', // Menyelaraskan teks secara vertikal
-    
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+
   },
   item: {
     backgroundColor: 'white',
     padding: 10,
     marginVertical: 8,
     borderRadius: 5,
-    justifyContent:"space-beetwen",
-    width:"85%",
-    marginBottom:20,
-    marginLeft:"8%",
-    borderColor:"#21ABA5",
-    borderStyle:"solid",
+    justifyContent: "space-beetwen",
+    width: "85%",
+    marginBottom: 20,
+    marginLeft: "8%",
+    borderColor: "#21ABA5",
+    borderStyle: "solid",
     elevation: 3,
     borderWidth: 2,
     shadowColor: '#000',
@@ -107,27 +162,37 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    
-    
+
+
   },
   title: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginLeft:180,
-    color:"#D2B48C",
-    alignItems:"stretch"
+    marginLeft: 180,
+    color: "#D2B48C",
+    alignItems: "stretch"
   },
   errorText: {
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
   },
-  
-  
-  nl:{
-    marginLeft:10,
-    alignItems:"flex-end",
-    justifyContent:"flex-end",
+
+
+  nl: {
+    marginLeft: 10,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+  },
+
+  //search 
+  searchBox: { 
+    height: 40,
+    borderColor: 'orange',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
   },
 });
 
