@@ -3,7 +3,8 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from 'react-native-vector-icons';
 
 const CustomTabButton = ({ children, onPress, accessibilityState }) => {
-  const focused = accessibilityState.selected;
+  const focused = accessibilityState?.selected ?? false;
+
 
   return (
     <TouchableOpacity

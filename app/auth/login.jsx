@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity , Image, Alert} from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import _layout from '../navigation/_layout'; 
+import _layout from '../navigation/_layout';
 
 
 
@@ -24,12 +24,12 @@ const Login = () => {
       { cancelable: false } // Alert tidak bisa dibatalkan dengan menekan di luar alert
     );
   };
-  
+
 
   const handleLogin = async () => {
     try {
       // Kirim request login ke API
-      const response = await fetch('http://deya.my.id/api/login', {
+      const response = await fetch('http://192.168.185.51:8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,16 +41,15 @@ const Login = () => {
       console.log('Response Status:', response.status);  // Cek status code dari respons
       console.log('Response Data:', data);  // Cek data yang diterima
 
-      if (response.ok && data.token) {
-        const { token } = data;
 
-        // Simpan token ke AsyncStorage
-        await AsyncStorage.setItem('token', token);
+
+      if (response.ok && data.access_token) {
+        // Simpan access_token dengan benar
+        await AsyncStorage.setItem('token', data.access_token);
         console.log('Token saved successfully');
 
         // Redirect ke halaman dashboard
         navigation.navigate('_layout');
-
       } else {
         const errorMessage = data.detail || 'Login failed';
         showAlert(errorMessage);
@@ -63,7 +62,7 @@ const Login = () => {
       console.error(error);  // Log kesalahan untuk debugging
     }
   };
-  const handleregister = async() =>{
+  const handleregister = async () => {
     navigation.navigate('register')
   }
 
@@ -72,8 +71,8 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View >
-          <Image source={require('../../assets/images/moon.png')} style={{ width: 100, height: 100, marginBottom: -80, justifyContent: 'center', alignItems: 'center' }} />
-          <Image source={require('../../assets/images/login.png')} style={{ width: 100, height: 100, marginBottom: 60, justifyContent: 'center', alignItems: 'center' }} />
+        <Image source={require('../../assets/images/moon.png')} style={{ width: 100, height: 100, marginBottom: -80, justifyContent: 'center', alignItems: 'center' }} />
+        <Image source={require('../../assets/images/login.png')} style={{ width: 100, height: 100, marginBottom: 60, justifyContent: 'center', alignItems: 'center' }} />
       </View>
 
       <View style={styles.view1}>
@@ -100,7 +99,7 @@ const Login = () => {
         <TouchableOpacity onPress={handleregister} >
           <Text style={styles.buttonText2}>Belum punya akun? klik disini</Text>
         </TouchableOpacity>
-        
+
       </View>
 
 
@@ -135,8 +134,8 @@ const styles = StyleSheet.create({
 
     marginTop: -110,
     marginBottom: 20,
-    
-  
+
+
   },
   input: {
     height: 40,
@@ -164,10 +163,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   buttonText2: {
-   color: 'slategrey',
-   borderRadius: 10,
-   marginTop : 10, 
-   marginLeft:18,
+    color: 'slategrey',
+    borderRadius: 10,
+    marginTop: 10,
+    marginLeft: 18,
   },
 });
 
