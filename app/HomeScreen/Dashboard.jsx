@@ -22,15 +22,15 @@ export default function Dashboard() {
       style={styles.card}
       onPress={() => {
         if (card.id === '1') { navigation.navigate('db_study'); }
-        else if (card.id === '2') { navigation.navigate('db_islamic'); }
+        else if (card.id === '2') { navigation.navigate('db_activity'); }
         else if (card.id === '3') { navigation.navigate('db_kids'); }
         else if (card.id === '4') { navigation.navigate('db_read'); }
-        else if (card.id === '5') { navigation.navigate('db_activity'); }
+        else if (card.id === '5') { navigation.navigate('db_islamic'); }
         else if (card.id === '6') { navigation.navigate('db_savings'); }
       }}
     >
       <ImageBackground
-        source={card.image ? card.image : require('../../assets/images/scidac.png')}
+        source={card.image ? card.image : require('../../assets/images/studora.png')}
         style={styles.cardBackground}
         imageStyle={{ borderRadius: 10 }}
       >
@@ -41,11 +41,11 @@ export default function Dashboard() {
 
   const cardData = [
     { id: '1', image: require('../../assets/images/study.png'), },
-    { id: '2', image: require('../../assets/images/islamic.png'), },
-    { id: '3', image: require('../../assets/images/kids.png'), },
-    { id: '4', image: require('../../assets/images/read.png'), },
-    { id: '5', image: require('../../assets/images/activity.png'), },
-    { id: '6', image: require('../../assets/images/saving.png'), },
+    { id: '2', image: require('../../assets/images/game.png'), },
+    { id: '3', image: require('../../assets/images/capsules.png'), },
+    { id: '4', image: require('../../assets/images/tree.png'), },
+    { id: '5', image: require('../../assets/images/islamic.png'), },
+    { id: '6', image: require('../../assets/images/lbd.png'), },
   ];
 
   useEffect(() => {
@@ -75,36 +75,37 @@ export default function Dashboard() {
         console.log('Token:', token);
         if (!token) {
           console.log('Token tidak ditemukan!');
-          // Tindakan lain misalnya logout atau navigasi ke login
+          // Mungkin redirect ke login
           return;
         }
 
-
-
-
-
-        const response = await fetch('http://deya.my.id/api/profile', {
+        const response = await fetch('http://192.168.185.51:8000/api/user', {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
         });
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
-          console.error('Failed to fetch data:', response.status);
+          const text = await response.text();
+          console.error('Failed to fetch data:', response.status, text);
           return;
         }
 
-
-
         const json = await response.json();
-        setUser(json.user);
+        console.log('User data:', json);
+        setUser(json);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetch user:', error);
       } finally {
         setLoading(false);
       }
     };
+
 
     fetchUser();
   }, []);
@@ -118,9 +119,9 @@ export default function Dashboard() {
         <View style={styles.view1}>
           <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
-            <Text style={{ color: 'white', marginLeft:'40' }}>Hai,</Text>
-            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold', marginLeft:'40' }}>
-            {user && user.username ? user.username : "User"}
+            <Text style={{ color: 'white', marginLeft: '40' }}>Hai,</Text>
+            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold', marginLeft: '40' }}>
+              {user && user.username ? user.username : "User"}
             </Text>
           </View>
         </View>
@@ -134,8 +135,9 @@ export default function Dashboard() {
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             onContentSizeChange={(w, h) => {
-              scrollWidth.current = w; }}>
-            <BackgroundImage image={require('../../assets/images/isi.jpg')}  borderRadius={30} >
+              scrollWidth.current = w;
+            }}>
+            <BackgroundImage image={require('../../assets/images/isi.jpg')} borderRadius={30} >
               <Text style={styles.box}   ></Text>
             </BackgroundImage>
             <BackgroundImage image={require('../../assets/images/isi1.jpg')}>
@@ -156,24 +158,24 @@ export default function Dashboard() {
 
           </ScrollView>
 
-    </View>
+        </View>
 
-        {/* Render cards */ }
+        {/* Render cards */}
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map((card) => renderCard(card))}
-            <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Study</Text>
-            <Text style={{ marginRight: 2, marginTop: -50, color: 'black' }}>Islamic</Text>
-            <Text style={{ marginRight: 38, marginTop: -50, color: 'black' }}>Kids</Text>
+            <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>Math</Text>
+            <Text style={{ marginRight: -8, marginTop: -50, color: 'black' }}>play</Text>
+            <Text style={{ marginRight: 29, marginTop: -50, color: 'black' }}>capsule</Text>
           </View>
         </View>
 
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(3, 6).map((card) => renderCard(card))}
-            <Text style={{ marginLeft: 35, marginTop: -60, color: 'black' }}>Read</Text>
-            <Text style={{ marginRight: -20, marginTop: -60, color: 'black' }}>Activity</Text>
-            <Text style={{ marginRight: 36, marginTop: -60, color: 'black' }}>Saving</Text>
+            <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>tree</Text>
+            <Text style={{ marginRight: -29, marginTop: -50, color: 'black' }}>islamic</Text>
+            <Text style={{ marginRight: 27, marginTop: -50, color: 'black' }}>leaerbod</Text>
 
           </View>
         </View>
@@ -251,8 +253,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     margin: 20,
-    marginTop: 10,
-    marginBottom: 30,
+    marginTop: 5,
+    marginBottom: 20,
   },
   cardText: {
     color: '#fff',
