@@ -3,18 +3,30 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BackgroundImage from "../../component/fullBackground"
+import BackgroundImage from "../../component/fullBackground";
 
-
+// 🔥 Tambahkan ini untuk Firebase
+import { auth, db } from '../../firebase/firebaseconfig';
+import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation();  // Menggunakan useNavigation dengan benar
+  const navigation = useNavigation();
 
   const ref = useRef(null);
   const scrollPosition = useRef(0);
   const scrollWidth = useRef(0);
+
+  const cardData = [
+    { id: '1', image: require('../../assets/images/study.png'), },
+    { id: '2', image: require('../../assets/images/game.png'), },
+    { id: '3', image: require('../../assets/images/capsules.png'), },
+    { id: '4', image: require('../../assets/images/tree.png'), },
+    { id: '5', image: require('../../assets/images/islamic.png'), },
+    { id: '6', image: require('../../assets/images/lbd.png'), },
+  ];
 
   const renderCard = (card) => (
     <TouchableOpacity
@@ -23,7 +35,7 @@ export default function Dashboard() {
       onPress={() => {
         if (card.id === '1') { navigation.navigate('db_study'); }
         else if (card.id === '2') { navigation.navigate('db_activity'); }
-        else if (card.id === '3') { navigation.navigate('db_kids'); }
+        else if (card.id === '3') { navigation.navigate('db_capsule'); }
         else if (card.id === '4') { navigation.navigate('db_read'); }
         else if (card.id === '5') { navigation.navigate('db_islamic'); }
         else if (card.id === '6') { navigation.navigate('db_savings'); }
@@ -39,26 +51,15 @@ export default function Dashboard() {
     </TouchableOpacity>
   );
 
-  const cardData = [
-    { id: '1', image: require('../../assets/images/study.png'), },
-    { id: '2', image: require('../../assets/images/game.png'), },
-    { id: '3', image: require('../../assets/images/capsules.png'), },
-    { id: '4', image: require('../../assets/images/tree.png'), },
-    { id: '5', image: require('../../assets/images/islamic.png'), },
-    { id: '6', image: require('../../assets/images/lbd.png'), },
-  ];
-
+  // ➕ Auto scroll banner
   useEffect(() => {
     const interval = setInterval(() => {
       if (ref.current && scrollWidth.current > 0) {
         scrollPosition.current += 1;
-
         ref.current.scrollTo({
           x: scrollPosition.current,
           animated: false,
         });
-
-
         if (scrollPosition.current >= scrollWidth.current) {
           scrollPosition.current = 0;
         }
@@ -67,68 +68,49 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // ✅ Ambil data user dari Firestore
   useEffect(() => {
-    console.log('useEffect dipanggil');
-    const fetchUser = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        console.log('Token:', token);
-        if (!token) {
-          console.log('Token tidak ditemukan!');
-          // Mungkin redirect ke login
-          return;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          } else {
+            console.log('User data tidak ditemukan di Firestore');
+          }
+        } catch (e) {
+          console.log('Gagal ambil data user:', e.message);
         }
-
-        const response = await fetch('http://192.168.185.51:8000/api/user', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-
-        console.log('Response status:', response.status);
-
-        if (!response.ok) {
-          const text = await response.text();
-          console.error('Failed to fetch data:', response.status, text);
-          return;
-        }
-
-        const json = await response.json();
-        console.log('User data:', json);
-        setUser(json);
-      } catch (error) {
-        console.error('Error fetch user:', error);
-      } finally {
-        setLoading(false);
       }
-    };
-
-
-    fetchUser();
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
   return (
-    <View
-      style={styles.container}>
+    <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <ScrollView contentContainerStyle={styles.scrollContent} >
-        {/* Informasi pengguna */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.view1}>
           <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
-            <Text style={{ color: 'white', marginLeft: '40' }}>Hai,</Text>
-            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold', marginLeft: '40' }}>
-              {user && user.username ? user.username : "User"}
-            </Text>
+            {loading ? (
+              <Text>Loading user data...</Text>
+            ) : userData ? (
+              <>
+                <Text style={"width:30,color:white"}>Halo,</Text>
+                <Text>{userData.username}</Text>
+               
+              </>
+            ) : (
+              <Text>Data user tidak ditemukan.</Text>
+            )}
           </View>
         </View>
 
-        {/* Pop-up informasi */}
         <View style={styles.view2}>
-
           <ScrollView
             horizontal={true}
             ref={ref}
@@ -136,9 +118,10 @@ export default function Dashboard() {
             scrollEventThrottle={16}
             onContentSizeChange={(w, h) => {
               scrollWidth.current = w;
-            }}>
-            <BackgroundImage image={require('../../assets/images/isi.jpg')} borderRadius={30} >
-              <Text style={styles.box}   ></Text>
+            }}
+          >
+            <BackgroundImage image={require('../../assets/images/isi.jpg')} borderRadius={30}>
+              <Text style={styles.box}></Text>
             </BackgroundImage>
             <BackgroundImage image={require('../../assets/images/isi1.jpg')}>
               <Text style={styles.box}></Text>
@@ -155,12 +138,9 @@ export default function Dashboard() {
             <BackgroundImage image={require('../../assets/images/isi5.jpg')}>
               <Text style={styles.box}></Text>
             </BackgroundImage>
-
           </ScrollView>
-
         </View>
 
-        {/* Render cards */}
         <View style={styles.view3}>
           <View style={styles.row}>
             {cardData.slice(0, 3).map((card) => renderCard(card))}
@@ -176,20 +156,12 @@ export default function Dashboard() {
             <Text style={{ marginLeft: 35, marginTop: -50, color: 'black' }}>tree</Text>
             <Text style={{ marginRight: -29, marginTop: -50, color: 'black' }}>islamic</Text>
             <Text style={{ marginRight: 27, marginTop: -50, color: 'black' }}>leaerbod</Text>
-
           </View>
         </View>
-      </ScrollView >
-
-
-    </View >
+      </ScrollView>
+    </View>
   );
 }
-
-
-
-
-
 
 
 
@@ -209,6 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingTop: StatusBar.currentHeight,
     margin: 20,
+    marginTop:50,
 
 
   },

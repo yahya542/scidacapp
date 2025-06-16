@@ -1,27 +1,45 @@
 import { StyleSheet, Text, View, Alert } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Logout from '../../../component/logout';
 import Garis from '../../../component/horizontal';
 import { useNavigation } from '@react-navigation/native';
 import Edit from '../../../component/edit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../../firebase/firebaseconfig';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '../../../firebase/firebaseconfig';
+import { doc, getDoc } from 'firebase/firestore';
 
-function ProfileScreen() {
+export default function ProfileScreen() {
   const navigation = useNavigation();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Ambil data user dari Firestore berdasarkan UID
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          } else {
+            console.log('User data tidak ditemukan di Firestore');
+          }
+        } catch (e) {
+          console.log('Gagal ambil data user:', e.message);
+        }
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = async () => {
     try {
-      // 1. Logout dari Firebase
       await signOut(auth);
-
-      // 2. Hapus data lokal (opsional, tergantung apa yg kamu simpan)
-      await AsyncStorage.clear(); // atau removeItem('userData') jika pakai key tertentu
-
-      // 3. Alert (navigasi otomatis akan dilakukan oleh onAuthStateChanged)
+      await AsyncStorage.clear();
       Alert.alert('Logout berhasil');
-
     } catch (e) {
       console.error('Logout error:', e);
       Alert.alert('Maaf, logout gagal');
@@ -39,20 +57,31 @@ function ProfileScreen() {
         <Logout onPress={handleLogout} name="Logout" />
         <View style={styles.foto}></View>
         <Garis />
-        <Text style={styles.bio}>Username:</Text>
-        <Garis />
-        <Text style={styles.bio}>No Hp:</Text>
-        <Garis />
-        <Text style={styles.bio}>Alamat:</Text>
-        <Garis />
-        <Text style={styles.bio}>Email:</Text>
-        <Garis />
+
+        {loading ? (
+          <Text style={styles.bio}>Memuat data...</Text>
+        ) : userData ? (
+          <>
+            <Text style={styles.bio}>Username: </Text> 
+            <Text style={styles.isi}>{userData.username}</Text>
+            <Garis />
+            <Text style={styles.bio}>No Hp:</Text>
+            <Text style={styles.isi}> {userData.noHp || '-'}</Text>
+            <Garis />
+            <Text style={styles.bio}>Alamat:</Text>
+            <Text style={styles.isi}   > {userData.alamat || '-'}</Text>
+            <Garis />
+            <Text style={styles.bio}>Email: </Text>
+             <Text style={styles.isi}   > {userData.email}</Text>
+            <Garis />
+          </>
+        ) : (
+          <Text style={styles.bio}>Data user tidak ditemukan.</Text>
+        )}
       </View>
     </View>
   );
 }
-
-export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -68,6 +97,9 @@ const styles = StyleSheet.create({
     borderRadius: 100, marginTop: -100,
   },
   bio: {
-    marginLeft: -150, marginTop: 20, color: "orange",
+    marginLeft: -150, marginTop: 20, color: "orange", width: 100, fontWeight: "bold",
+  },
+  isi : {
+    marginLeft: 50, marginTop: -20, color: "lightblue",
   },
 });

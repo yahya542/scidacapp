@@ -19,7 +19,7 @@ import Islamic        from './MenuScreens/islamic/_layout';
 import Activity       from './MenuScreens/activity/db_activity';
 import Savings        from './MenuScreens/savings/db_savings';
 import Read           from './MenuScreens/read/db_read';
-import Kids           from './MenuScreens/kids/db_kids';
+import capsule           from './MenuScreens/capsule/db_capsule';
 
 /* --- ukuran tab dinamis --- */
 import { Dimensions } from 'react-native';
@@ -51,7 +51,7 @@ function DashboardStack() {
       <InTab.Screen name="db_activity"component={Activity} />
       <InTab.Screen name="db_savings" component={Savings}  />
       <InTab.Screen name="db_read"    component={Read}     />
-      <InTab.Screen name="db_kids"    component={Kids}     />
+      <InTab.Screen name="db_capsule"    component={capsule}     />
     </InTab.Navigator>
   );
 }

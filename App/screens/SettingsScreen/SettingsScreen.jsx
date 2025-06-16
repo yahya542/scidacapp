@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: "100%",
     backgroundColor: 'lightblue', // sesuaikan dengan warna container
     position: 'absolute',
-    marginTop: "150%",
+    marginTop: "175%",
     zIndex: 10,
     
   },
