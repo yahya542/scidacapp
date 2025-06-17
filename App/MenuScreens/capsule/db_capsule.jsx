@@ -6,20 +6,29 @@ import {
   Easing,
   Pressable,
   Image,
-  Text,
-  TextInput,
-  Alert
+  Alert,
 } from 'react-native';
 
 import { db } from '@/firebase/firebaseconfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
+import { generateDummyQA, checkAnswer } from '../../utils/dummy';
+import TopicInput from './components/TopicInput';
+import DummyQuestion from './components/DummyQuestion';
+import SubmitButton from './components/SubmitButton';
+import { doc, updateDoc, increment, deleteDoc, getDocs,  query, orderBy, limit } from 'firebase/firestore';
+import { getScore } from '../../utils/scoring'; // kamu bisa taruh getScore di file baru atau langsung di file ini
+
+
 const CapsuleScreen = () => {
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [broken, setBroken] = useState(false);
   const [topic, setTopic] = useState('');
+  const [dummyQA, setDummyQA] = useState(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [result, setResult] = useState(null);
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -64,7 +73,7 @@ const CapsuleScreen = () => {
 
   const handleSubmitTopic = async () => {
     if (!topic.trim()) {
-      Alert.alert('Error', 'Topic tidak boleh kosong.');
+      Alert.alert('Error', 'Topik tidak boleh kosong.');
       return;
     }
 
@@ -78,17 +87,70 @@ const CapsuleScreen = () => {
 
     try {
       const userId = user.uid;
+
       await addDoc(collection(db, 'users', userId, 'topics'), {
         topic,
         createdAt: new Date(),
       });
-      Alert.alert('Sukses', 'Topik berhasil disimpan!');
+
+      const generated = generateDummyQA(topic);
+      setDummyQA(generated);
       setTopic('');
+      setResult(null);
     } catch (error) {
       console.error('Error adding topic:', error);
       Alert.alert('Error', 'Gagal menyimpan topik.');
     }
   };
+
+  const handleCheckAnswer = async () => {
+  if (!dummyQA || !userAnswer) {
+    Alert.alert('Error', 'Pertanyaan atau jawaban tidak valid.');
+    return;
+  }
+
+  const score = getScore(userAnswer, dummyQA.answer);
+
+  let resultMsg = '';
+  if (score === 10) resultMsg = 'Benar!';
+  else if (score === 8) resultMsg = 'Hampir benar!';
+  else resultMsg = 'Salah!';
+
+  setResult(resultMsg);
+
+  Alert.alert('Hasil Jawaban', `Jawaban benar: ${dummyQA.answer}\nSkor kamu: ${score}`);
+
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userId = user.uid;
+
+    //  Tambahkan poin
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      points: increment(score),
+    });
+
+    // Ambil dokumen topik terbaru & hapus
+    const topicsRef = collection(db, 'users', userId, 'topics');
+    const q = query(topicsRef, orderBy('createdAt', 'desc'), limit(1));
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(async docSnap => {
+      await deleteDoc(docSnap.ref);
+    });
+
+    //  Reset UI
+    setDummyQA(null);
+    setUserAnswer('');
+  } catch (error) {
+    console.error('Gagal saat memproses jawaban:', error);
+    Alert.alert('Error', 'Terjadi kesalahan saat menyimpan hasil.');
+  }
+};
+
 
   return (
     <View style={styles.container}>
@@ -96,12 +158,7 @@ const CapsuleScreen = () => {
         <Pressable onPress={handlePress}>
           <Animated.Image
             source={require('../../../assets/images/pills.png')}
-            style={[
-              styles.capsule,
-              {
-                transform: [{ rotate }, { scale: scaleAnim }],
-              },
-            ]}
+            style={[styles.capsule, { transform: [{ rotate }, { scale: scaleAnim }] }]}
             resizeMode="contain"
           />
         </Pressable>
@@ -113,19 +170,21 @@ const CapsuleScreen = () => {
         />
       )}
 
-      {broken && (
+      {broken && !dummyQA && (
         <>
-          <TextInput
-            placeholder="Masukkan Topik"
-            value={topic}
-            onChangeText={setTopic}
-            style={styles.input}
-            placeholderTextColor="#888"
-          />
-          <Pressable style={styles.capsuleButton} onPress={handleSubmitTopic}>
-            <Text style={styles.buttonText}>Kirim Topik</Text>
-          </Pressable>
+          <TopicInput topic={topic} setTopic={setTopic} />
+          <SubmitButton onPress={handleSubmitTopic} />
         </>
+      )}
+
+      {broken && dummyQA && (
+        <DummyQuestion
+          dummyQA={dummyQA}
+          userAnswer={userAnswer}
+          setUserAnswer={setUserAnswer}
+          onCheckAnswer={handleCheckAnswer}
+          result={result}
+        />
       )}
     </View>
   );
@@ -148,33 +207,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 5,
-  },
-  capsuleButton: {
-    marginTop: 30,
-    backgroundColor: '#FF4D4D',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 50,
-    elevation: 3,
-    shadowColor: '#FF4D4D',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    letterSpacing: 1,
-  },
-  input: {
-    width: '80%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    borderRadius: 10,
-    fontSize: 16,
-    color: '#000',
   },
 });
 

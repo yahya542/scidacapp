@@ -93,22 +93,42 @@ export default function Dashboard() {
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.view1}>
-          <Image source={require('../../assets/images/scidac.png')} style={styles.image1} resizeMode="contain" />
+        {/* <View style={styles.view1}>
+          <Image source={require('../../assets/images/studora.png')} style={styles.image1} resizeMode="contain" />
           <View style={styles.text1}>
             {loading ? (
               <Text>Loading user data...</Text>
             ) : userData ? (
               <>
-                <Text style={"width:30,color:white"}>Halo,</Text>
-                <Text>{userData.username}</Text>
+               
+                <Text >{userData.username}</Text>
+                <Text> point : {userData.points}</Text>
                
               </>
             ) : (
               <Text>Data user tidak ditemukan.</Text>
             )}
           </View>
+        </View> */}
+        <View style={styles.profileCard}>
+          <Image
+            source={require('../../assets/images/studora.png')} // Ganti dengan avatar user jika ada
+            style={styles.avatar}
+          />
+          <View style={styles.userInfo}>
+            {loading ? (
+              <Text style={styles.username}>Loading...</Text>
+            ) : userData ? (
+              <>
+                <Text style={styles.username}>{userData.username}</Text>
+                <Text style={styles.points}>⭐ Points: {userData.points}</Text>
+              </>
+            ) : (
+              <Text style={styles.username}>User tidak ditemukan</Text>
+            )}
+          </View>
         </View>
+
 
         <View style={styles.view2}>
           <ScrollView
@@ -171,20 +191,7 @@ const styles = StyleSheet.create({
     flex: 1
 
   },
-  view1: {
-    backgroundColor: 'lightblue',
-    width: '90%',
-    height: 240,
-    justifyContent: 'top',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 30,
-    paddingTop: StatusBar.currentHeight,
-    margin: 20,
-    marginTop:50,
-
-
-  },
+ 
   view2: {
     width: '90%',
     justifyContent: 'center',
@@ -258,4 +265,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  profileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+    height: 240,
+  },
+   view1: {
+    backgroundColor: 'lightblue',
+    width: '90%',
+   
+    justifyContent: 'top',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderRadius: 30,
+    paddingTop: StatusBar.currentHeight,
+    margin: 20,
+    marginTop: 50,
+
+
+  },
+
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: '#fff',
+    marginRight: 15,
+  },
+
+  userInfo: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+
+  username: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 5,
+  },
+
+  points: {
+    fontSize: 16,
+    color: '#ffd700', // warna emas
+  },
+
 });
