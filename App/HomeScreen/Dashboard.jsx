@@ -38,7 +38,7 @@ export default function Dashboard() {
         else if (card.id === '3') { navigation.navigate('db_capsule'); }
         else if (card.id === '4') { navigation.navigate('db_read'); }
         else if (card.id === '5') { navigation.navigate('db_islamic'); }
-        else if (card.id === '6') { navigation.navigate('db_savings'); }
+        else if (card.id === '6') { navigation.navigate('leaderbord'); }
       }}
     >
       <ImageBackground

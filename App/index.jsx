@@ -17,7 +17,7 @@ import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 import Study          from './MenuScreens/study/db_study';
 import Islamic        from './MenuScreens/islamic/_layout';
 import Activity       from './MenuScreens/activity/db_activity';
-import Savings        from './MenuScreens/savings/db_savings';
+import leaderbord     from './MenuScreens/leaderbord/leaderbord';
 import Read           from './MenuScreens/read/db_read';
 import capsule           from './MenuScreens/capsule/db_capsule';
 
@@ -49,7 +49,7 @@ function DashboardStack() {
       <InTab.Screen name="db_study"   component={Study}    />
       <InTab.Screen name="db_islamic" component={Islamic}  />
       <InTab.Screen name="db_activity"component={Activity} />
-      <InTab.Screen name="db_savings" component={Savings}  />
+      <InTab.Screen name="leaderbord" component={leaderbord}  />
       <InTab.Screen name="db_read"    component={Read}     />
       <InTab.Screen name="db_capsule"    component={capsule}     />
     </InTab.Navigator>
