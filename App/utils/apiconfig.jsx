@@ -2,6 +2,6 @@
 
 export const AI_API_CONFIG = {
   endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-  apiKey: 'Bearer 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',
+  apiKey: 'Bearer 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',
   model: 'deepseek/deepseek-r1-0528-qwen3-8b:free'
 };

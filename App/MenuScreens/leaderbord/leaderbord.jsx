@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseconfig';
 
@@ -7,29 +7,37 @@ const LeaderboardScreen = () => {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const leaderboardQuery = query(
-          collection(db, 'users'),
-          orderBy('points', 'desc'),
-          limit(10)
-        );
-        const querySnapshot = await getDocs(leaderboardQuery);
-        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setLeaderboard(data);
-      } catch (error) {
-        console.error('Gagal mengambil data leaderboard:', error);
-      }
-    };
+  console.log('🔥 useEffect terpanggil');
 
-    fetchLeaderboard();
-  }, []);
+  const fetchLeaderboard = async () => {
+    try {
+      console.log('🔍 Memulai fetchLeaderboard');
+
+      const leaderboardQuery = query(
+        collection(db, 'users'),
+        orderBy('points', 'desc'),
+        limit(10)
+      );
+      const querySnapshot = await getDocs(leaderboardQuery);
+
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log('📊 Data leaderboard:', data);
+
+      setLeaderboard(data);
+    } catch (error) {
+      console.error('❌ Gagal mengambil data leaderboard:', error);
+    }
+  };
+
+  fetchLeaderboard();
+}, []);
+
 
   const renderItem = ({ item, index }) => (
     <View style={styles.listItem}>
       <Text style={styles.rank}>{index + 1}</Text>
       <View style={styles.userInfo}>
-        <Text style={styles.name}>{item.name || 'Anonim'}</Text>
+        <Text style={styles.name}>{item.username || 'Anonim'}</Text>
         <Text style={styles.points}>{item.points} Poin</Text>
       </View>
     </View>
@@ -48,7 +56,7 @@ const LeaderboardScreen = () => {
                 source={require('../../../assets/images/studora.png')}
                 style={[styles.medalIcon, { tintColor: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32' }]}
               />
-              <Text style={styles.topName}>{item.name || 'Anonim'}</Text>
+              <Text style={styles.topName}>{item.username || 'Anonim'}</Text>
               <Text style={styles.topPoints}>{item.points} pts</Text>
             </View>
           ))}
@@ -75,6 +83,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
+    marginTop:30,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
