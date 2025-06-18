@@ -93,24 +93,8 @@ export default function Dashboard() {
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* <View style={styles.view1}>
-          <Image source={require('../../assets/images/studora.png')} style={styles.image1} resizeMode="contain" />
-          <View style={styles.text1}>
-            {loading ? (
-              <Text>Loading user data...</Text>
-            ) : userData ? (
-              <>
-               
-                <Text >{userData.username}</Text>
-                <Text> point : {userData.points}</Text>
-               
-              </>
-            ) : (
-              <Text>Data user tidak ditemukan.</Text>
-            )}
-          </View>
-        </View> */}
-        <View style={styles.profileCard}>
+        
+        {/* <View style={styles.profileCard}>
           <Image
             source={require('../../assets/images/studora.png')} // Ganti dengan avatar user jika ada
             style={styles.avatar}
@@ -127,7 +111,29 @@ export default function Dashboard() {
               <Text style={styles.username}>User tidak ditemukan</Text>
             )}
           </View>
-        </View>
+        </View> */}
+         <ImageBackground
+      source={require('../../assets/images/heading.png')} // Gambar background kamu
+      style={styles.profileCard}
+      imageStyle={{ borderRadius: 16 }} // supaya sudutnya melengkung, opsional
+    >
+      <Image
+        source={require('../../assets/images/studora.png')} // avatar user (bisa beda)
+        style={styles.avatar}
+      />
+      <View style={styles.userInfo}>
+        {loading ? (
+          <Text style={styles.username}>Loading...</Text>
+        ) : userData ? (
+          <>
+            <Text style={styles.username}>{userData.username}</Text>
+            <Text style={styles.points}>⭐ Points: {userData.points}</Text>
+          </>
+        ) : (
+          <Text style={styles.username}>User tidak ditemukan</Text>
+        )}
+      </View>
+    </ImageBackground>
 
 
         <View style={styles.view2}>
@@ -198,6 +204,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: "5%",
     borderRadius: 70,
+    marginTop: 30,
 
   },
 

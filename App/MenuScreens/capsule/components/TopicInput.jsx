@@ -1,22 +1,31 @@
 import React from 'react';
-import { TextInput } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 
 const TopicInput = ({ topic, setTopic }) => (
-  <TextInput
-    placeholder="Masukkan Topik"
-    value={topic}
-    onChangeText={setTopic}
-    style={{
-      width: '80%',
-      borderWidth: 1,
-      borderColor: '#ccc',
-      padding: 12,
-      borderRadius: 10,
-      fontSize: 16,
-      color: '#000',
-    }}
-    placeholderTextColor="#888"
-  />
+  <View style={styles.inputContainer}>
+    <TextInput
+      placeholder="Contoh: Sistem Tata Surya, Perang Dunia II..."
+      value={topic}
+      onChangeText={setTopic}
+      style={styles.input}
+      placeholderTextColor="#999"
+    />
+  </View>
 );
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    width: '100%',
+    marginBottom: 12,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#bbb',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#F9F9F9',
+  },
+});
 
 export default TopicInput;

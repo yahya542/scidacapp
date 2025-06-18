@@ -1,46 +1,67 @@
 import React from 'react';
-import { View, Text, TextInput, Pressable } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 
-const DummyQuestion = ({ dummyQA, userAnswer, setUserAnswer, onCheckAnswer, result }) => {
+const DummyQuestion = ({ question, myAns, setMyAns, onCheck }) => {
   return (
-    <View style={{ width: '100%', alignItems: 'center', gap: 10 }}>
-      <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>
-        {dummyQA.question}
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.questionLabel}>Pertanyaan:</Text>
+      <Text style={styles.question}>{question}</Text>
+
       <TextInput
-        placeholder="Jawaban kamu"
-        value={userAnswer}
-        onChangeText={setUserAnswer}
-        style={{
-          width: '80%',
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 12,
-          borderRadius: 10,
-          fontSize: 16,
-          color: '#000',
-        }}
-        placeholderTextColor="#888"
+        placeholder="Masukkan jawabanmu..."
+        value={myAns}
+        onChangeText={setMyAns}
+        style={styles.input}
+        multiline
+        textAlignVertical="top"
       />
-      <Pressable
-        style={{
-          marginTop: 10,
-          backgroundColor: '#FF4D4D',
-          paddingVertical: 12,
-          paddingHorizontal: 30,
-          borderRadius: 50,
-        }}
-        onPress={onCheckAnswer}
-      >
-        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Cek Jawaban</Text>
+
+      <Pressable onPress={onCheck} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+        <Text style={styles.buttonText}>Periksa Jawaban</Text>
       </Pressable>
-      {result && (
-        <Text style={{ fontSize: 16, color: result === 'Benar!' ? 'green' : 'red' }}>
-          {result}
-        </Text>
-      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 16,
+    width: '100%',
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 12,
+    elevation: 2,
+  },
+  questionLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#444',
+  },
+  question: {
+    fontSize: 18,
+    color: '#222',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    minHeight: 60,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  buttonPressed: {
+    backgroundColor: '#45a049',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default DummyQuestion;

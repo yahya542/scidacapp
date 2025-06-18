@@ -5,7 +5,7 @@ const SubmitButton = ({ onPress }) => (
   <Pressable
     style={{
       marginTop: 30,
-      backgroundColor: '#FF4D4D',
+      backgroundColor: 'orange',
       paddingVertical: 12,
       paddingHorizontal: 30,
       borderRadius: 50,
