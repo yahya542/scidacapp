@@ -25,20 +25,20 @@ import {
   limit,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 
+// ✅ Ambil dari server Glitch
 import { getAIQuestionAnswer, checkAnswerWithAI } from '../../utils/ai';
 
 import TopicInput from './components/TopicInput';
 import DummyQuestion from './components/DummyQuestion';
 import SubmitButton from './components/SubmitButton';
-import { useNavigation } from '@react-navigation/native';
 
 const CapsuleScreen = () => {
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const navigation = useNavigation();
 
-  // ────── State
   const [broken, setBroken] = useState(false);
   const [topic, setTopic] = useState('');
   const [dummyQA, setDummyQA] = useState(null);
@@ -47,7 +47,7 @@ const CapsuleScreen = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState('capsule'); // capsule | input | question | result
 
-  // ────── Capsule shaking animation
+  // ─── Capsule animation
   useEffect(() => {
     const loop = Animated.loop(
       Animated.sequence([
@@ -61,7 +61,6 @@ const CapsuleScreen = () => {
 
   const rotate = shakeAnim.interpolate({ inputRange: [-1, 1], outputRange: ['-4deg', '4deg'] });
 
-  // ────── Handle capsule press
   const handlePress = () => {
     Animated.sequence([
       Animated.timing(scaleAnim, { toValue: 1.2, duration: 150, useNativeDriver: true }),
@@ -72,7 +71,7 @@ const CapsuleScreen = () => {
     });
   };
 
-  // ────── Submit topic
+  // ─── Submit topik ke Firestore dan ambil pertanyaan AI
   const handleSubmitTopic = async () => {
     if (!topic.trim()) return Alert.alert('Error', 'Topik tidak boleh kosong.');
     const user = getAuth().currentUser;
@@ -87,7 +86,7 @@ const CapsuleScreen = () => {
         createdAt: new Date(),
       });
 
-      const generated = await getAIQuestionAnswer(topic);
+      const generated = await getAIQuestionAnswer(topic); // ✅ ambil dari Glitch
       setDummyQA(generated);
       setStep('question');
       setTopic('');
@@ -100,7 +99,7 @@ const CapsuleScreen = () => {
     }
   };
 
-  // ────── Check answer
+  // ─── Evaluasi jawaban user dengan checkAnswerWithAI (tetap pakai OpenAI / lokal)
   const handleCheckAnswer = async () => {
     if (!dummyQA || !userAnswer.trim()) return Alert.alert('Error', 'Jawaban tidak boleh kosong.');
 
@@ -143,10 +142,8 @@ const CapsuleScreen = () => {
     }
   };
 
-  // ────── UI
   return (
     <View style={styles.container}>
-      {/* Capsule awal */}
       {step === 'capsule' && (
         <Pressable onPress={handlePress}>
           <Animated.Image
@@ -157,12 +154,10 @@ const CapsuleScreen = () => {
         </Pressable>
       )}
 
-      {/* Kapsul pecah */}
       {broken && step !== 'capsule' && (
         <Image source={require('../../../assets/images/pecah.png')} style={styles.capsule} resizeMode="contain" />
       )}
 
-      {/* Input Topik */}
       {step === 'input' && !loading && (
         <>
           <TopicInput topic={topic} setTopic={setTopic} />
@@ -170,10 +165,8 @@ const CapsuleScreen = () => {
         </>
       )}
 
-      {/* Spinner */}
       {loading && <ActivityIndicator size="large" color="#4CAF50" />}
 
-      {/* Pertanyaan */}
       {step === 'question' && dummyQA && (
         <DummyQuestion
           question={dummyQA.question}
@@ -183,7 +176,6 @@ const CapsuleScreen = () => {
         />
       )}
 
-      {/* Hasil */}
       {step === 'result' && result && (
         <View style={{ marginTop: 20, alignItems: 'center' }}>
           <Image source={require('../../../assets/images/studora.png')} style={{ width: 80, height: 80 }} />
@@ -204,7 +196,6 @@ const CapsuleScreen = () => {
               Kembali ke Dashboard
             </Text>
           </Pressable>
-
         </View>
       )}
     </View>

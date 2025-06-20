@@ -1,91 +1,45 @@
-
-import { AI_API_CONFIG } from './apiconfig';
+/**
+ * Meminta pertanyaan dan jawaban dari AI melalui server Glitch.
+ * @param {string} topic - Topik yang ingin dikirim ke AI.
+ * @returns {{question: string, answer: string}}
+ */
 export const getAIQuestionAnswer = async (topic) => {
   try {
-    const res = await fetch(AI_API_CONFIG.endpoint, {
+    const res = await fetch('https://creative-worried-produce.glitch.me/generate', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${AI_API_CONFIG.apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: AI_API_CONFIG.model,
-        messages: [
-          {
-            role: 'user',
-            content: `Buat SATU pertanyaan sederhana terkait "${topic}". Format jawabannya HARUS seperti ini:
-               
-Pertanyaan: <isi pertanyaan>
-Jawaban: <isi jawaban>
-
-Tanpa tambahan kalimat pembuka atau penutup.`,
-          },
-        ],
-      }),
+      body: JSON.stringify({ topic }),
     });
+
+    if (!res.ok) {
+      console.error('❌ Gagal dari server Glitch:', res.status);
+      return {
+        question: 'Tidak bisa mengambil pertanyaan',
+        answer: 'Silakan coba beberapa saat lagi.',
+      };
+    }
 
     const data = await res.json();
 
-    if (!res.ok) {
-      console.error('AI error response:', data);
-      throw new Error(data.error?.message || 'Gagal panggil AI');
+    if (!data.question || !data.answer) {
+      console.warn('⚠️ Data kosong dari AI:', data);
+      return {
+        question: 'Pertanyaan tidak ditemukan',
+        answer: 'Jawaban tidak tersedia.',
+      };
     }
-
-    const raw = data.choices?.[0]?.message?.content || '';
-    console.log('AI response (raw):', raw);
-
-    // Regex parsing
-    const questionMatch = raw.match(/(?:\*\*)?Pertanyaan\s*:\s*(.+)/i);
-    const answerMatch = raw.match(/(?:\*\*)?Jawaban\s*:\s*([\s\S]+)/i);
 
     return {
-      question: questionMatch?.[1]?.trim() || 'Pertanyaan tidak ditemukan',
-      answer: answerMatch?.[1]?.trim() || 'Jawaban tidak ditemukan',
+      question: data.question,
+      answer: data.answer,
     };
-  } catch (err) {
-    console.error('getAIQuestionAnswer error:', err);
-    throw err;
+  } catch (error) {
+    console.error('❌ Error fetch ke Glitch:', error);
+    return {
+      question: 'Terjadi kesalahan saat menghubungi AI',
+      answer: 'Silakan periksa koneksi internet atau coba lagi nanti.',
+    };
   }
 };
-
-export const checkAnswerWithAI = async (question, correctAnswer, userAnswer) => {
-  try {
-    const res = await fetch(AI_API_CONFIG.endpoint, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${AI_API_CONFIG.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: AI_API_CONFIG.model,
-        messages: [
-          { role: 'system', content: 'Kamu bertindak sebagai pemeriksa.' },
-          {
-            role: 'user',
-            content:
-              `Soal:\n${question}\n\n` +
-              `Jawaban benar:\n${correctAnswer}\n\n` +
-              `Jawaban user:\n${userAnswer}\n\n` +
-              `Nilai 10 jika tepat, 8-9 jika hampir benar, 0-7 jika salah. ` +
-              `Balas hanya dengan salah satu kata: Benar, Hampir, atau Salah.`,
-          },
-        ],
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error('AI checkAnswer error:', data);
-      throw new Error(data.error?.message || 'Gagal memeriksa jawaban');
-    }
-
-    const verdict = data.choices?.[0]?.message?.content?.trim();
-    console.log('Penilaian AI:', verdict);
-    return verdict;
-  } catch (err) {
-    console.error('checkAnswerWithAI error:', err);
-    throw err;
-  }
-};
-
