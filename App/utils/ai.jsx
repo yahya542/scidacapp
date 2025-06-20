@@ -5,7 +5,7 @@ export const getAIQuestionAnswer = async (topic) => {
     const res = await fetch(AI_API_CONFIG.endpoint, {
       method: 'POST',
       headers: {
-        Authorization: AI_API_CONFIG.apiKey,
+        Authorization: `Bearer ${AI_API_CONFIG.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -14,7 +14,7 @@ export const getAIQuestionAnswer = async (topic) => {
           {
             role: 'user',
             content: `Buat SATU pertanyaan sederhana terkait "${topic}". Format jawabannya HARUS seperti ini:
-            
+               
 Pertanyaan: <isi pertanyaan>
 Jawaban: <isi jawaban>
 
@@ -53,7 +53,7 @@ export const checkAnswerWithAI = async (question, correctAnswer, userAnswer) => 
     const res = await fetch(AI_API_CONFIG.endpoint, {
       method: 'POST',
       headers: {
-        Authorization: AI_API_CONFIG.apiKey,
+        Authorization: `Bearer ${AI_API_CONFIG.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

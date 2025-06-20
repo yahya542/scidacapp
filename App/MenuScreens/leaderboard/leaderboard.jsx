@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ImageBackground} from 'react-native';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseconfig';
 
@@ -44,6 +44,11 @@ const LeaderboardScreen = () => {
   );
 
   return (
+    <ImageBackground
+      source={require('../../../assets/images/bgldb3.png')} // path ke gambar tadi
+      style={styles.bgldb}
+      resizeMode="cover"
+    >
     <View style={styles.container}>
       <Text style={styles.header}>🏆 Leaderboard</Text>
 
@@ -71,16 +76,19 @@ const LeaderboardScreen = () => {
         contentContainerStyle={{ paddingBottom: 30 }}
       />
     </View>
+    </ImageBackground>
   );
 };
 
 export default LeaderboardScreen;
 const styles = StyleSheet.create({
-  container: {
+  
+  bgldb: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  
   header: {
     fontSize: 24,
     marginTop:30,
