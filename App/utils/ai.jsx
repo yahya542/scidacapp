@@ -3,6 +3,7 @@
  * @param {string} topic - Topik yang ingin dikirim ke AI.
  * @returns {{question: string, answer: string}}
  */
+
 export const getAIQuestionAnswer = async (topic) => {
   try {
     const res = await fetch('https://creative-worried-produce.glitch.me/generate', {
@@ -43,3 +44,25 @@ export const getAIQuestionAnswer = async (topic) => {
     };
   }
 };
+
+import nlp from 'compromise';
+
+export const checkAnswerWithAI = async (question, correctAnswer, userAnswer) => {
+  const normalize = (text) => nlp(text).normalize({punctuation: true}).text().toLowerCase();
+
+  const ai = normalize(correctAnswer);
+  const user = normalize(userAnswer);
+
+  console.log('🧪 AI:', ai);
+  console.log('🧪 User:', user);
+
+  const isSame = ai.includes(user) || user.includes(ai);
+  const overlap = ai.split(' ').filter((word) => user.includes(word));
+  const overlapScore = overlap.length / ai.split(' ').length;
+
+  if (isSame || overlapScore >= 0.75) return 'Benar';
+  if (overlapScore >= 0.5) return 'Hampir';
+  return 'Salah';
+};
+
+                                                                                                            

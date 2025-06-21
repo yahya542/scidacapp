@@ -19,7 +19,7 @@ const islamic = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.view1}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('comingsoon')}>
             <Image
               style={styles.img2}
               source={require('../../../assets/images/tasbih.png')}
@@ -28,7 +28,7 @@ const islamic = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.view1}>
-          <TouchableOpacity  onPress={() => navigation.navigate('shalat')}   >
+         <TouchableOpacity onPress={() => navigation.navigate('comingsoon')}>
             <Image
               style={styles.img2}
               source={require('../../../assets/images/praying.png')}
@@ -37,7 +37,7 @@ const islamic = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.view1}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('comingsoon')}>
             <Image
               style={styles.img3}
               source={require('../../../assets/images/kalender.png')}

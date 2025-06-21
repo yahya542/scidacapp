@@ -33,10 +33,10 @@ export default function Dashboard() {
       key={card.id}
       style={styles.card}
       onPress={() => {
-        if (card.id === '1') { navigation.navigate('db_study'); }
-        else if (card.id === '2') { navigation.navigate('db_activity'); }
+        if (card.id === '1') { navigation.navigate('comingsoon'); }
+        else if (card.id === '2') { navigation.navigate('comingsoon'); }
         else if (card.id === '3') { navigation.navigate('db_capsule'); }
-        else if (card.id === '4') { navigation.navigate('db_read'); }
+        else if (card.id === '4') { navigation.navigate('comingsoon'); }
         else if (card.id === '5') { navigation.navigate('db_islamic'); }
         else if (card.id === '6') { navigation.navigate('leaderboard'); }
       }}

@@ -16,7 +16,7 @@ import {
   collection,
   addDoc,
   doc,
-  updateDoc,
+  setDoc,
   increment,
   deleteDoc,
   getDocs,
@@ -86,7 +86,11 @@ const CapsuleScreen = () => {
         createdAt: new Date(),
       });
 
-      const generated = await getAIQuestionAnswer(topic); // ✅ ambil dari Glitch
+      const generated = await getAIQuestionAnswer(topic);
+
+      console.log('📩 Soal dari AI:', generated.question);
+      console.log('📩 Jawaban dari AI:', generated.answer);
+
       setDummyQA(generated);
       setStep('question');
       setTopic('');
@@ -120,9 +124,11 @@ const CapsuleScreen = () => {
       const user = getAuth().currentUser;
       if (user) {
         const userId = user.uid;
-        await updateDoc(doc(db, 'users', userId), {
-          points: increment(score),
-        });
+        await setDoc(
+          doc(db, 'users', userId),
+          { points: increment(score) },
+          { merge: true }
+        );
 
         const topicsRef = collection(db, 'users', userId, 'topics');
         const q = query(topicsRef, orderBy('createdAt', 'desc'), limit(1));

@@ -20,7 +20,7 @@ import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 
 import Study from './MenuScreens/study/db_study';
 import Islamic from './MenuScreens/islamic/_layout';
-import Activity from './MenuScreens/activity/db_activity';
+import Comingsoon from '../component/belumTersedia';
 import Leaderboard from './MenuScreens/leaderboard/leaderboard';
 import Read from './MenuScreens/read/db_read';
 import Capsule from './MenuScreens/capsule/db_capsule';
@@ -29,9 +29,8 @@ import Capsule from './MenuScreens/capsule/db_capsule';
 function Splash() {
   return (
     <View style={styles.splash}>
-      <Image source={require('../assets/images/scidac.png')} style={{ height: 200 }} resizeMode="contain" />
-      <Text style={styles.heading}>SIDAC</Text>
-      <Text style={styles.body}>Study Islamic and Daily Activity</Text>
+      <Image source={require('../assets/images/studora.png')} style={{ height: 200 }} resizeMode="contain" />
+     
     </View>
   );
 }
@@ -49,7 +48,7 @@ function DashboardStack() {
       <InTab.Screen name="Dashboard" component={Dashboard} />
       <InTab.Screen name="db_study" component={Study} />
       <InTab.Screen name="db_islamic" component={Islamic} />
-      <InTab.Screen name="db_activity" component={Activity} />
+      <InTab.Screen name="comingsoon" component={Comingsoon }/>
       <InTab.Screen name="leaderboard" component={Leaderboard} />
       <InTab.Screen name="db_read" component={Read} />
       <InTab.Screen name="db_capsule" component={Capsule} />

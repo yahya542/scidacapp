@@ -21,6 +21,7 @@
     "@react-navigation/native": "^7.1.10",
     "@react-navigation/native-stack": "^7.3.14",
     "@react-navigation/stack": "^7.1.2",
+    "compromise": "^14.14.4",
     "expo": "^53.0.0",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
@@ -47,6 +48,7 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
+    "string-similarity": "^4.0.4",
     "use-latest-callback": "^0.2.4"
   },
   "devDependencies": {
