@@ -130,10 +130,12 @@ const styles = StyleSheet.create({
   topThreeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: 'brown',
+    backgroundColor: 'white',
     width: '100%',
     paddingVertical: 10,
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: 'gold',
   },
   topUser: {
     alignItems: 'center',
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
   topName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'orangered',
   },
   topPoints: {
     fontSize: 16,
