@@ -125,6 +125,7 @@ export default function App() {
           <>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name='ComingSoon' component={Comingsoon}   />
           </>
         )}
       </Stack.Navigator>

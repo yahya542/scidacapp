@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import ComingSoon from '../../component/belumTersedia';
 
 export default function AuthIndex() {
   const router = useRouter();
@@ -19,6 +20,12 @@ export default function AuthIndex() {
         onPress={() => router.push('/auth/register')}
       >
         <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push('ComingSoon')}
+      >
+        <Text style={styles.buttonText}>Comingsoon</Text>
       </TouchableOpacity>
     </View>
   );
