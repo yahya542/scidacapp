@@ -8,22 +8,13 @@ import {
 import { getFirestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBASE_APP_ID,
-} from '@env';
-
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBASE_APP_ID,
+  apiKey: "AIzaSyD1lyhon0RJ2i8l-0iKv2fqVgrh1yiyDYw",
+  authDomain: "studora-backend.firebaseapp.com",
+  projectId: "studora-backend",
+  storageBucket: "studora-backend.firebasestorage.app",
+  messagingSenderId: "314425749835",
+  appId: "1:314425749835:web:f7733c9e40c40d521878ce",
 };
 
 const app = initializeApp(firebaseConfig);
