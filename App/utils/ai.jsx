@@ -1,10 +1,8 @@
-import Constants from 'expo-constants';
-
-const OPENROUTER_KEY = Constants.expoConfig.extra.OPENROUTER_KEY;
+// utils/ai.js
 
 /**
- * Meminta pertanyaan dan jawaban dari AI melalui server Glitch.
- * @param {string} topic - Topik yang ingin dikirim ke AI.
+ * Mengambil pertanyaan dan jawaban dari server Glitch
+ * @param {string} topic - Topik yang dikirim user
  * @returns {{question: string, answer: string}}
  */
 export const getAIQuestionAnswer = async (topic) => {
@@ -13,7 +11,6 @@ export const getAIQuestionAnswer = async (topic) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENROUTER_KEY}`, // ⬅️ Tambahan penting di sini
       },
       body: JSON.stringify({ topic }),
     });
@@ -46,5 +43,39 @@ export const getAIQuestionAnswer = async (topic) => {
       question: 'Terjadi kesalahan saat menghubungi AI',
       answer: 'Silakan periksa koneksi internet atau coba lagi nanti.',
     };
+  }
+};
+
+/**
+ * Mengevaluasi jawaban user menggunakan AI lewat server Glitch
+ * @param {string} question - Pertanyaan dari AI
+ * @param {string} correctAnswer - Jawaban AI yang benar
+ * @param {string} userAnswer - Jawaban dari user
+ * @returns {string} - Hasil evaluasi, misalnya: "Benar", "Hampir benar", "Salah"
+ */
+export const checkAnswerWithAI = async (question, correctAnswer, userAnswer) => {
+  try {
+    const res = await fetch('https://creative-worried-produce.glitch.me/check', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question,
+        correctAnswer,
+        userAnswer,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.verdict) {
+      return 'Evaluasi tidak tersedia';
+    }
+
+    return data.verdict;
+  } catch (err) {
+    console.error('❌ Error saat evaluasi ke Glitch:', err);
+    return 'Terjadi kesalahan saat mengevaluasi jawaban';
   }
 };

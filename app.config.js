@@ -1,12 +1,3 @@
-import * as dotenv from 'dotenv';
-import { resolve } from 'path';
-
-// Arahkan ke .env di folder backend
-dotenv.config({ path: resolve(__dirname, '../backend/.env') });
-
-console.log("✅ Loaded OPENROUTER_KEY:", process.env.OPENROUTER_KEY);
-
-
 export default {
   expo: {
     name: "StudoraApp",
@@ -24,7 +15,6 @@ export default {
       eas: {
         projectId: "46be1248-5755-4fa1-916c-54baedfcb238",
       },
-      OPENROUTER_KEY: process.env.OPENROUTER_KEY,
     },
   },
 };
