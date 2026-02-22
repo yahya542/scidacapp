@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'drf_spectacular',
     
     # Local apps
     'apps.users',
@@ -46,32 +47,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'studora_backend.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+
 
 WSGI_APPLICATION = 'studora_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('DB_NAME', 'studora_db'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'password'),
+        'USER': os.getenv('DB_USER', 'studora'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Studora123'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+        'OPTIONS': {
+            'init_command': 'SET default_storage_engine=INNODB',
+        },
+        'TEST': {
+            'NAME': 'test_studora_db',
+        },
     }
 }
 
@@ -113,6 +106,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
         'rest_framework.filters.SearchFilter',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # JWT Settings
@@ -137,3 +131,19 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG
 # AI API Configuration (OpenRouter)
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
 OPENROUTER_MODEL = os.getenv('OPENROUTER_MODEL', 'mistral:instruct')
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates', # <-- Pastikan baris ini ADA
+        'DIRS': [], # Bisa diisi jika kamu punya folder template custom
+        'APP_DIRS': True, # <-- Harus True supaya Django bisa cari template di folder admin
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth', # Penting untuk Admin
+                'django.contrib.messages.context_processors.messages', # Penting untuk Admin
+            ],
+        },
+    },
+]
