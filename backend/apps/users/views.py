@@ -28,7 +28,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
     
     def get_object(self):
         return self.request.user
@@ -52,7 +51,6 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
 def change_password(request):
     user = request.user
     old_password = request.data.get('old_password')
@@ -77,7 +75,6 @@ def change_password(request):
 
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
 def me(request):
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data)

@@ -54,7 +54,7 @@ WSGI_APPLICATION = 'studora_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'studora_db'),
+        'NAME': os.getenv('DB_NAME', 'studora'),
         'USER': os.getenv('DB_USER', 'studora'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'Studora123'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
@@ -147,3 +147,12 @@ TEMPLATES = [
         },
     },
 ]
+
+# settings.py
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Studora', # Hanya satu string
+    'DESCRIPTION': 'API untuk aplikasi Islamic, Auth, Quiz, dan Leaderboard',
+    'VERSION': '1.2.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': r'/api/', # Mengabaikan /api/ agar tag diambil dari path setelahnya
+}
