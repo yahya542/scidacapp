@@ -156,3 +156,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'SCHEMA_PATH_PREFIX': r'/api/', # Mengabaikan /api/ agar tag diambil dari path setelahnya
 }
+
+
+FORCE_SCRIPT_NAME = '/studora'
+STATIC_URL = '/studora/static/'
