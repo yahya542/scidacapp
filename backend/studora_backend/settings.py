@@ -160,4 +160,4 @@ SPECTACULAR_SETTINGS = {
 
 FORCE_SCRIPT_NAME = '/studora'
 STATIC_URL = '/studora/static/'
-ALLOWED_HOSTS=localhost,127.0.0.1,sajakcodingan.biz.id
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'sajakcodingan.biz.id', 'www.sajakcodingan.biz.id']
