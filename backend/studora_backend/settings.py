@@ -124,13 +124,17 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://localhost:19006",
     "exp://localhost:19000",
+    "https://sajakcodingan.biz.id",
+    "exp://tunnel-uah7a-145-162-158-136.ngrok.io",
+    "exp://tunnel-uah7a-145-162-158-136.ngrok.io",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 # AI API Configuration (OpenRouter)
-OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
-OPENROUTER_MODEL = os.getenv('OPENROUTER_MODEL', 'mistral:instruct')
+API_KEY = os.getenv('API_KEY', '')
+MODEL = os.getenv('MODEL', 'mistral:instruct')
 
 TEMPLATES = [
     {
@@ -158,6 +162,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-FORCE_SCRIPT_NAME = '/studora'
+
 STATIC_URL = '/studora/static/'
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'sajakcodingan.biz.id', 'www.sajakcodingan.biz.id']
+ALLOWED_HOSTS = ['*']

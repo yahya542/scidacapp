@@ -5,41 +5,40 @@ import Garis from '../../../component/horizontal';
 import { useNavigation } from '@react-navigation/native';
 import Edit from '../../../component/edit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../../../firebase/firebaseconfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { getProfile, logout } from '../../utils/api';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Ambil data user dari Firestore berdasarkan UID
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, 'users', user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setUserData(docSnap.data());
-          } else {
-            console.log('User data tidak ditemukan di Firestore');
-          }
-        } catch (e) {
-          console.log('Gagal ambil data user:', e.message);
+    const fetchUserData = async () => {
+      try {
+        const storedUserData = await AsyncStorage.getItem('userData');
+        if (storedUserData) {
+          setUserData(JSON.parse(storedUserData));
         }
+        const profileResult = await getProfile();
+        if (profileResult.success) {
+          setUserData(profileResult);
+        }
+      } catch (error) {
+        console.log('Gagal ambil data user:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    };
+    
+    fetchUserData();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      await AsyncStorage.clear();
-      Alert.alert('Logout berhasil');
+      await logout();
+      Alert.alert('Logout berhasil', '', [
+        { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Login' }] }) }
+      ]);
     } catch (e) {
       console.error('Logout error:', e);
       Alert.alert('Maaf, logout gagal');

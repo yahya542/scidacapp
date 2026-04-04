@@ -5,10 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundImage from "../../component/fullBackground";
 
-// 🔥 Tambahkan ini untuk Firebase
-import { auth, db } from '../../firebase/firebaseconfig';
-import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { getProfile } from '../utils/api';
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -51,7 +48,6 @@ export default function Dashboard() {
     </TouchableOpacity>
   );
 
-  // ➕ Auto scroll banner
   useEffect(() => {
     const interval = setInterval(() => {
       if (ref.current && scrollWidth.current > 0) {
@@ -68,25 +64,25 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Ambil data user dari Firestore
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, 'users', user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setUserData(docSnap.data());
-          } else {
-            console.log('User data tidak ditemukan di Firestore');
-          }
-        } catch (e) {
-          console.log('Gagal ambil data user:', e.message);
+    const fetchUserData = async () => {
+      try {
+        const storedUserData = await AsyncStorage.getItem('userData');
+        if (storedUserData) {
+          setUserData(JSON.parse(storedUserData));
         }
+        const profileResult = await getProfile();
+        if (profileResult.success) {
+          setUserData(profileResult);
+        }
+      } catch (error) {
+        console.log('Gagal ambil data user:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    };
+    
+    fetchUserData();
   }, []);
 
   return (

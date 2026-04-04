@@ -4,10 +4,10 @@ import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons'; // ganti jika pakai expo
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase/firebaseconfig';
+import { getProfile } from './utils/api';
 
 /* ---------- Auth ---------- */
 import Login from './auth/login';
@@ -107,11 +107,29 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setReady(true);
-    });
-    return unsubscribe;
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const userData = await AsyncStorage.getItem('userData');
+        
+        if (token) {
+          const profileResult = await getProfile();
+          if (profileResult.success) {
+            setUser(profileResult);
+          } else {
+            await AsyncStorage.removeItem('authToken');
+            await AsyncStorage.removeItem('refreshToken');
+            await AsyncStorage.removeItem('userData');
+          }
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setReady(true);
+      }
+    };
+    
+    checkAuth();
   }, []);
 
   if (!ready) return <Splash />;

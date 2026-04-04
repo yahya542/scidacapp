@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from 'react-native';
-import { getAuth } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebaseconfig'; // sesuaikan path-nya
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getProfile } from '../../utils/api';
+
+const API_BASE_URL = 'https://sajakcodingan.biz.id/studora';
 
 export default function EditProfileScreen({ navigation }) {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    noHp: '',
+    no_hp: '',
     alamat: ''
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        const storedUserData = await AsyncStorage.getItem('userData');
+        if (storedUserData) {
+          const data = JSON.parse(storedUserData);
           setFormData({
             username: data.username || '',
             email: data.email || '',
-            noHp: data.noHp || '',
+            no_hp: data.no_hp || '',
             alamat: data.alamat || ''
           });
         }
@@ -34,18 +32,34 @@ export default function EditProfileScreen({ navigation }) {
       }
     };
 
-    if (user) fetchUserData();
+    fetchUserData();
   }, []);
 
   const handleSave = async () => {
+    setLoading(true);
     try {
-      const docRef = doc(db, 'users', user.uid);
-      await setDoc(docRef, formData, { merge: true });
-      Alert.alert('Sukses', 'Profil berhasil diperbarui!');
-      navigation.goBack(); // kembali ke halaman sebelumnya
+      const token = await AsyncStorage.getItem('authToken');
+      const response = await fetch(`${API_BASE_URL}/api/auth/profile/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        await AsyncStorage.setItem('userData', JSON.stringify(formData));
+        Alert.alert('Sukses', 'Profil berhasil diperbarui!');
+        navigation.goBack();
+      } else {
+        Alert.alert('Error', 'Gagal menyimpan profil');
+      }
     } catch (error) {
       console.error('Gagal menyimpan:', error.message);
       Alert.alert('Error', 'Gagal menyimpan profil');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,8 +83,8 @@ export default function EditProfileScreen({ navigation }) {
       <Text style={styles.label}>No HP</Text>
       <TextInput
         style={styles.input}
-        value={formData.noHp}
-        onChangeText={text => setFormData({ ...formData, noHp: text })}
+        value={formData.no_hp}
+        onChangeText={text => setFormData({ ...formData, no_hp: text })}
         keyboardType="phone-pad"
       />
 

@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+import uuid
 from .models import Topic, Question, QuizAttempt
 from .serializers import (
     TopicSerializer,
@@ -52,38 +53,38 @@ class QuizAttemptListView(generics.ListAPIView):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def generate_question(request):
-    """Generate a question from topic using AI"""
+    """Generate a question from topic using AI and save to DB"""
     serializer = GenerateQuestionRequestSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     topic_text = serializer.validated_data['topic']
     
-    # Save topic
+    # Save topic to DB
     topic = Topic.objects.create(user=request.user, topic=topic_text)
     
     # Generate question using AI
     ai_response = AIService.generate_question(topic_text)
     
-    # Save question
+    # Save question to DB
     question = Question.objects.create(
         topic=topic,
         question_text=ai_response['question'],
         correct_answer=ai_response['answer']
     )
     
+    # Return ONLY question (not answer)
     return Response({
-        'topic_id': str(topic.id),
         'question_id': str(question.id),
+        'topic_id': str(topic.id),
         'question': ai_response['question'],
-        'answer': ai_response['answer']
     })
 
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def check_answer(request):
-    """Check user answer using AI"""
+    """Check user answer by comparing with correct answer from DB"""
     serializer = CheckAnswerRequestSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -91,22 +92,16 @@ def check_answer(request):
     question_id = serializer.validated_data['question_id']
     user_answer = serializer.validated_data['user_answer']
     
-    # Get question
+    # Get question and correct answer from DB
     question = get_object_or_404(Question, id=question_id, topic__user=request.user)
+    correct_answer = question.correct_answer
     
     # Check answer using AI
     ai_result = AIService.check_answer(
         question.question_text,
-        question.correct_answer,
+        correct_answer,
         user_answer
     )
-    
-    # Map verdict to status
-    status_map = {
-        'benar': 'correct',
-        'hampir': 'partial',
-        'salah': 'incorrect'
-    }
     
     # Save attempt
     attempt = QuizAttempt.objects.create(
@@ -118,7 +113,7 @@ def check_answer(request):
         feedback=ai_result['feedback']
     )
     
-    # Delete topic after attempt (like in original app)
+    # Delete topic after attempt
     question.topic.delete()
     
     return Response({
@@ -126,9 +121,16 @@ def check_answer(request):
         'verdict': ai_result['verdict'],
         'score': ai_result['score'],
         'feedback': ai_result['feedback'],
-        'correct_answer': question.correct_answer,
+        'correct_answer': correct_answer,
         'total_points': request.user.points
     })
+
+
+status_map = {
+    'benar': 'correct',
+    'hampir': 'partial',
+    'salah': 'incorrect'
+}
 
 
 @api_view(['GET'])

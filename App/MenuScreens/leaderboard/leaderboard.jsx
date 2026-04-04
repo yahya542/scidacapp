@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, ImageBackground } from 'react-native';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase/firebaseconfig';
+
 
 const LeaderboardScreen = () => {
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState({ top_three: [], others: [], my_rank: 0, my_points: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const leaderboardQuery = query(
-          collection(db, 'users'),
-          orderBy('points', 'desc'),
-          limit(10)
-        );
-        const querySnapshot = await getDocs(leaderboardQuery);
-        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const data = await getLeaderboard();
         setLeaderboard(data);
       } catch (error) {
         console.error('❌ Gagal mengambil data leaderboard:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,10 +35,10 @@ const LeaderboardScreen = () => {
     <View style={styles.headerContainer}>
       <Text style={styles.header}>🏆 Leaderboard</Text>
 
-      {leaderboard.length >= 3 && (
+      {leaderboard.top_three && leaderboard.top_three.length >= 1 && (
         <View style={styles.topThreeContainer}>
-          {leaderboard.slice(0, 3).map((item, index) => (
-            <View key={item.id} style={styles.topUser}>
+          {leaderboard.top_three.map((item, index) => (
+            <View key={item.id || index} style={styles.topUser}>
               <Image
                 source={require('../../../assets/images/trophy.png')}
                 style={[
@@ -67,6 +63,20 @@ const LeaderboardScreen = () => {
     </View>
   );
 
+  if (loading) {
+    return (
+      <ImageBackground
+        source={require('../../../assets/images/bgldb2.png')}
+        style={styles.bgldb}
+        resizeMode="cover"
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'white', fontSize: 16 }}>Loading...</Text>
+        </View>
+      </ImageBackground>
+    );
+  }
+
   return (
     <ImageBackground
       source={require('../../../assets/images/bgldb2.png')}
@@ -74,8 +84,8 @@ const LeaderboardScreen = () => {
       resizeMode="cover"
     >
       <FlatList
-        data={leaderboard.slice(3)}
-        keyExtractor={(item) => item.id}
+        data={leaderboard.others || []}
+        keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={renderItem}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20 }}

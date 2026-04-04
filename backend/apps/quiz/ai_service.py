@@ -1,189 +1,194 @@
 import requests
 from django.conf import settings
+from rapidfuzz import fuzz
+import re
 
 
 class AIService:
-    BASE_URL = 'https://api.openrouter.ai/v1/chat/completions'
-    
+    BASE_URL = 'https://generatedpromptpro.online/sieka/api/bot_api.php'
+
+    # =========================
+    # SAFE SETTINGS
+    # =========================
+    @staticmethod
+    def _get_setting(name, default=None):
+        return getattr(settings, name, default)
+
     @classmethod
     def _get_headers(cls):
+        api_key = cls._get_setting("API_KEY")
         return {
-            'Authorization': f'Bearer {settings.OPENROUTER_API_KEY}',
+            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://studora.app',
-            'X-Title': 'Studora App'
         }
-    
+
+    # =========================
+    # CALL API
+    # =========================
+    @classmethod
+    def _call_api(cls, prompt):
+        api_key = cls._get_setting("API_KEY")
+
+        if not api_key:
+            print("❌ API_KEY tidak ditemukan")
+            return None
+
+        try:
+            response = requests.post(
+                cls.BASE_URL,
+                headers=cls._get_headers(),
+                json={'pesan': prompt},
+                timeout=30
+            )
+
+            print("🔵 STATUS:", response.status_code)
+            print("🔵 RAW:", response.text)
+
+            response.raise_for_status()
+
+            try:
+                result = response.json()
+            except:
+                result = {"raw": response.text}
+
+            print("🟢 JSON:", result)
+
+            return result
+
+        except Exception as e:
+            print(f"❌ AI API Error: {e}")
+            return None
+
+    # =========================
+    # EXTRACT CONTENT (PENTING)
+    # =========================
+    @staticmethod
+    def _extract_content(result):
+        try:
+            return result.get('choices', [{}])[0].get('message', {}).get('content', '')
+        except Exception:
+            return str(result)
+
+    # =========================
+    # GENERATE QUESTION
+    # =========================
     @classmethod
     def generate_question(cls, topic):
-        """Generate a question and answer based on topic"""
-        if not settings.OPENROUTER_API_KEY:
-            # Fallback jika tidak ada API key
-            return {
-                'question': f'Apa yang kamu ketahui tentang {topic}?',
-                'answer': f'Ini adalah jawaban contoh tentang {topic}'
-            }
-        
-        prompt = f"""Buatkan 1 pertanyaan singkat dan jawabannya tentang topik: {topic}
+        if not cls._get_setting("API_KEY"):
+            return cls._fallback(topic)
 
-Format output HARUS seperti ini:
-PERTANYAAN: [pertanyaan singkat]
-JAWABAN: [jawaban singkat]
+        prompt = f"""
+Buatkan 1 pertanyaan dan jawaban singkat tentang topik: {topic}
 
-Pastikan pertanyaan objektif dan jawabannya jelas."""
+Format:
+PERTANYAAN: ...
+JAWABAN: ...
+"""
 
         try:
-            response = requests.post(
-                cls.BASE_URL,
-                headers=cls._get_headers(),
-                json={
-                    'model': settings.OPENROUTER_MODEL,
-                    'messages': [{'role': 'user', 'content': prompt}],
-                    'max_tokens': 500
-                },
-                timeout=30
-            )
-            response.raise_for_status()
-            
-            content = response.json()['choices'][0]['message']['content']
-            
-            # Parse response
-            question = ""
-            answer = ""
-            
-            lines = content.split('\n')
-            for line in lines:
-                line = line.strip()
-                if line.startswith('PERTANYAAN:'):
-                    question = line.replace('PERTANYAAN:', '').strip()
-                elif line.startswith('JAWABAN:'):
-                    answer = line.replace('JAWABAN:', '').strip()
-            
-            if not question or not answer:
-                # Fallback parsing
-                parts = content.split('JAWABAN:')
-                if len(parts) >= 2:
-                    question = parts[0].replace('PERTANYAAN:', '').strip()
-                    answer = parts[1].strip()
-            
+            result = cls._call_api(prompt)
+
+            if not result:
+                return cls._fallback(topic)
+
+            content = cls._extract_content(result)
+
+            question, answer = cls._parse_qa(content, topic)
+
             return {
-                'question': question or f'Apa yang kamu ketahui tentang {topic}?',
-                'answer': answer or f'Jawaban tentang {topic}'
+                'question': question,
+                'answer': answer
             }
-            
+
         except Exception as e:
-            print(f"AI Service Error: {e}")
-            return {
-                'question': f'Apa yang kamu ketahui tentang {topic}?',
-                'answer': f'Ini adalah jawaban contoh tentang {topic}'
-            }
-    
+            print(f"❌ Generate Error: {e}")
+            return cls._fallback(topic)
+
+    # =========================
+    # CHECK ANSWER (FUZZY)
+    # =========================
     @classmethod
     def check_answer(cls, question, correct_answer, user_answer):
-        """Check user answer against correct answer"""
-        if not settings.OPENROUTER_API_KEY:
-            # Fallback simple check
-            similarity = cls._simple_similarity(correct_answer.lower(), user_answer.lower())
-            if similarity > 0.8:
-                return {'verdict': 'benar', 'score': 10, 'feedback': 'Jawaban kamu benar!'}
-            elif similarity > 0.5:
-                return {'verdict': 'hampir', 'score': 8, 'feedback': 'Hampir benar!'}
-            else:
-                return {'verdict': 'salah', 'score': 0, 'feedback': 'Jawaban kamu kurang tepat'}
-        
-        prompt = f"""Evaluasi jawaban user berikut:
 
-PERTANYAAN: {question}
-JAWABAN BENAR: {correct_answer}
-JAWABAN USER: {user_answer}
+        correct = cls._clean_text(correct_answer)
+        user = cls._clean_text(user_answer)
 
-Beri penilaian dalam format:
-VERDICT: [benar/hampir/salah]
-SCORE: [0-10]
-FEEDBACK: [penjelasan singkat]
+        fuzzy_score = fuzz.token_sort_ratio(correct, user) / 100
+        simple_score = cls._simple_similarity(correct, user)
 
-Kriteria:
-- benar: jawaban user benar atau mendekati 90%
-- hampir: jawaban user 50-80% benar
-- salah: jawaban user kurang dari 50% benar"""
+        similarity = (fuzzy_score + simple_score) / 2
 
-        try:
-            response = requests.post(
-                cls.BASE_URL,
-                headers=cls._get_headers(),
-                json={
-                    'model': settings.OPENROUTER_MODEL,
-                    'messages': [{'role': 'user', 'content': prompt}],
-                    'max_tokens': 300
-                },
-                timeout=30
-            )
-            response.raise_for_status()
-            
-            content = response.json()['choices'][0]['message']['content']
-            
-            # Parse response
-            verdict = 'salah'
-            score = 0
-            feedback = 'Jawaban kamu kurang tepat'
-            
-            lines = content.split('\n')
-            for line in lines:
-                line = line.strip()
-                if line.startswith('VERDICT:'):
-                    v = line.replace('VERDICT:', '').strip().lower()
-                    if 'benar' in v:
-                        verdict = 'benar'
-                    elif 'hampir' in v or 'partial' in v:
-                        verdict = 'hampir'
-                    else:
-                        verdict = 'salah'
-                elif line.startswith('SCORE:'):
-                    try:
-                        score = int(line.replace('SCORE:', '').strip())
-                    except:
-                        score = 0
-                elif line.startswith('FEEDBACK:'):
-                    feedback = line.replace('FEEDBACK:', '').strip()
-            
-            # Normalize score
-            if verdict == 'benar':
-                score = max(score, 10)
-            elif verdict == 'hampir':
-                score = max(score, 8) if score == 0 else min(score, 9)
-            else:
-                score = min(score, 5)
-            
-            return {
-                'verdict': verdict,
-                'score': score,
-                'feedback': feedback
-            }
-            
-        except Exception as e:
-            print(f"AI Service Error: {e}")
-            # Fallback
-            similarity = cls._simple_similarity(correct_answer.lower(), user_answer.lower())
-            if similarity > 0.8:
-                return {'verdict': 'benar', 'score': 10, 'feedback': 'Jawaban kamu benar!'}
-            elif similarity > 0.5:
-                return {'verdict': 'hampir', 'score': 8, 'feedback': 'Hampir benar!'}
-            else:
-                return {'verdict': 'salah', 'score': 0, 'feedback': 'Jawaban kamu kurang tepat'}
-    
+        if similarity > 0.85:
+            return cls._result('benar', 10, 'Jawaban kamu benar!', similarity)
+
+        if similarity > 0.6:
+            return cls._result('hampir', 7, 'Jawaban kamu hampir benar!', similarity)
+
+        return cls._result('salah', 0, 'Jawaban kurang tepat', similarity)
+
+    # =========================
+    # PARSE QA (LEBIH KUAT)
+    # =========================
+    @staticmethod
+    def _parse_qa(content, topic):
+        if not content:
+            return AIService._fallback(topic).values()
+
+        question = ""
+        answer = ""
+
+        for line in content.split('\n'):
+            line_clean = line.strip().lower()
+
+            if 'pertanyaan' in line_clean:
+                parts = line.split(':', 1)
+                if len(parts) > 1:
+                    question = parts[1].strip()
+
+            elif 'jawaban' in line_clean:
+                parts = line.split(':', 1)
+                if len(parts) > 1:
+                    answer = parts[1].strip()
+
+        if not question:
+            question = f'Apa yang kamu ketahui tentang {topic}?'
+
+        if not answer:
+            answer = f'Jawaban tentang {topic}'
+
+        return question, answer
+
+    # =========================
+    # UTILS
+    # =========================
+    @staticmethod
+    def _clean_text(text):
+        text = text.lower()
+        text = re.sub(r'[^\w\s]', '', text)
+        return text
+
     @staticmethod
     def _simple_similarity(str1, str2):
-        """Simple similarity calculation as fallback"""
-        if not str1 or not str2:
-            return 0.0
-        
         set1 = set(str1.split())
         set2 = set(str2.split())
-        
+
         if not set1 or not set2:
             return 0.0
-        
-        intersection = len(set1.intersection(set2))
-        union = len(set1.union(set2))
-        
-        return intersection / union if union > 0 else 0.0
+
+        return len(set1 & set2) / len(set1 | set2)
+
+    @staticmethod
+    def _result(verdict, score, feedback, similarity):
+        return {
+            'verdict': verdict,
+            'score': score,
+            'feedback': feedback,
+            'similarity': round(similarity, 2)
+        }
+
+    @staticmethod
+    def _fallback(topic):
+        return {
+            'question': f'Apa yang kamu ketahui tentang {topic}?',
+            'answer': f'Jawaban tentang {topic}'
+        }

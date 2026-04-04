@@ -24,8 +24,8 @@ class QuestionWithAnswerSerializer(serializers.ModelSerializer):
 
 
 class QuizAttemptSerializer(serializers.ModelSerializer):
-    question_text = serializers.CharField(source='question.question_text', read_only=True)
-    correct_answer = serializers.CharField(source='question.correct_answer', read_only=True)
+    question_text = serializers.CharField(source='question.question_text', read_only=True, allow_null=True)
+    correct_answer = serializers.CharField(source='question.correct_answer', read_only=True, allow_null=True)
     
     class Meta:
         model = QuizAttempt
@@ -46,6 +46,7 @@ class GenerateQuestionRequestSerializer(serializers.Serializer):
 class CheckAnswerRequestSerializer(serializers.Serializer):
     question_id = serializers.UUIDField(required=True)
     user_answer = serializers.CharField(required=True)
+    correct_answer = serializers.CharField(required=False, allow_blank=True)
 
 
 class AIQuestionResponseSerializer(serializers.Serializer):

@@ -11,24 +11,9 @@ import {
   Text,
 } from 'react-native';
 
-import { db } from '@/firebase/firebaseconfig';
-import {
-  collection,
-  addDoc,
-  doc,
-  setDoc,
-  increment,
-  deleteDoc,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-} from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
-// ✅ Ambil dari server Glitch
-import { getAIQuestionAnswer, checkAnswerWithAI } from '../../utils/ai';
+import { generateQuestion, checkAnswer } from '../../utils/api';
 
 import TopicInput from './components/TopicInput';
 import DummyQuestion from './components/DummyQuestion';
@@ -45,9 +30,8 @@ const CapsuleScreen = () => {
   const [userAnswer, setUserAnswer] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState('capsule'); // capsule | input | question | result
+  const [step, setStep] = useState('capsule');
 
-  // ─── Capsule animation
   useEffect(() => {
     const loop = Animated.loop(
       Animated.sequence([
@@ -71,75 +55,60 @@ const CapsuleScreen = () => {
     });
   };
 
-  // ─── Submit topik ke Firestore dan ambil pertanyaan AI
   const handleSubmitTopic = async () => {
     if (!topic.trim()) return Alert.alert('Error', 'Topik tidak boleh kosong.');
-    const user = getAuth().currentUser;
-    if (!user) return Alert.alert('Error', 'User belum login.');
 
     try {
       setLoading(true);
-      const userId = user.uid;
+      const generated = await generateQuestion(topic);
 
-      await addDoc(collection(db, 'users', userId, 'topics'), {
-        topic,
-        createdAt: new Date(),
-      });
-
-      const generated = await getAIQuestionAnswer(topic);
-
-      console.log('📩 Soal dari AI:', generated.question);
-      console.log('📩 Jawaban dari AI:', generated.answer);
-
-      setDummyQA(generated);
-      setStep('question');
-      setTopic('');
-      setResult(null);
+      if (generated.success) {
+        setDummyQA({
+          question: generated.question,
+          answer: generated.answer,
+          questionId: generated.question_id,
+        });
+        setStep('question');
+        setTopic('');
+        setResult(null);
+      } else {
+        Alert.alert('Error', generated.error || 'Gagal memproses topik.');
+      }
     } catch (err) {
       console.error(err);
-      Alert.alert('Error', err.message || 'Gagal memproses topik.');
+      Alert.alert('Error', 'Gagal memproses topik.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ─── Evaluasi jawaban user dengan checkAnswerWithAI (tetap pakai OpenAI / lokal)
   const handleCheckAnswer = async () => {
     if (!dummyQA || !userAnswer.trim()) return Alert.alert('Error', 'Jawaban tidak boleh kosong.');
 
     try {
       setLoading(true);
-      const verdict = await checkAnswerWithAI(dummyQA.question, dummyQA.answer, userAnswer);
+      const checkResult = await checkAnswer(dummyQA.questionId, userAnswer);
 
-      let score = 0;
-      let message = 'Salah!';
-      if (/benar/i.test(verdict)) {
-        score = 10;
-        message = 'Jawaban kamu benar!';
-      } else if (/hampir/i.test(verdict)) {
-        score = 8;
-        message = 'Hampir benar!';
+      if (checkResult.success) {
+        const score = checkResult.score || 0;
+        let message = 'Salah!';
+        if (checkResult.verdict === 'benar') {
+          message = 'Jawaban kamu benar!';
+        } else if (checkResult.verdict === 'hampir') {
+          message = 'Hampir benar!';
+        }
+
+        setResult({
+          msg: message,
+          correctAnswer: checkResult.correct_answer,
+          score: score,
+        });
+        setStep('result');
+        setDummyQA(null);
+        setUserAnswer('');
+      } else {
+        Alert.alert('Error', checkResult.error || 'Gagal mengevaluasi jawaban.');
       }
-
-      const user = getAuth().currentUser;
-      if (user) {
-        const userId = user.uid;
-        await setDoc(
-          doc(db, 'users', userId),
-          { points: increment(score) },
-          { merge: true }
-        );
-
-        const topicsRef = collection(db, 'users', userId, 'topics');
-        const q = query(topicsRef, orderBy('createdAt', 'desc'), limit(1));
-        const snapshot = await getDocs(q);
-        snapshot.forEach(async (docSnap) => await deleteDoc(docSnap.ref));
-      }
-
-      setResult({ msg: message, correctAnswer: dummyQA.answer, score });
-      setStep('result');
-      setDummyQA(null);
-      setUserAnswer('');
     } catch (error) {
       console.error('Gagal evaluasi jawaban:', error);
       Alert.alert('Error', 'Gagal mengevaluasi jawaban.');

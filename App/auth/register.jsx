@@ -9,12 +9,11 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase/firebaseconfig';
+import { register } from '../utils/api';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -22,6 +21,7 @@ export default function Register() {
   const [pass, setPass] = useState('');
   const [confirm, setConfirm] = useState('');
   const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
   const nav = useNavigation();
 
   const alertMsg = (title, m, cb = () => {}) =>
@@ -34,23 +34,22 @@ export default function Register() {
     if (pass !== confirm)
       return alertMsg('Registrasi Gagal', 'Konfirmasi password tidak cocok.');
 
+    setLoading(true);
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, pass);
-
-      await setDoc(doc(db, 'users', user.uid), {
-        email: user.email,
-        username: username,
-        createdAt: new Date(),
-      });
-
-      alertMsg('Sukses', 'Akun berhasil dibuat!', );
+      const result = await register(email, username, pass);
+      if (result.success) {
+        alertMsg('Sukses', 'Akun berhasil dibuat!', () => {
+          nav.navigate('Login');
+        });
+      } else {
+        setErr(result.error || 'Registrasi gagal');
+        alertMsg('Registrasi Gagal', result.error || 'Registrasi gagal');
+      }
     } catch (e) {
-      let m = 'Terjadi kesalahan.';
-      if (e.code === 'auth/email-already-in-use') m = 'Email sudah terdaftar';
-      if (e.code === 'auth/invalid-email') m = 'Email tidak valid';
-      if (e.code === 'auth/weak-password') m = 'Password min. 6 karakter';
-      setErr(m);
-      alertMsg('Registrasi Gagal', m);
+      setErr('Terjadi kesalahan.');
+      alertMsg('Registrasi Gagal', 'Terjadi kesalahan.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,8 +98,8 @@ export default function Register() {
 
           {err ? <Text style={styles.error}>{err}</Text> : null}
 
-          <TouchableOpacity style={styles.button} onPress={onReg}>
-            <Text style={styles.buttonText}>Daftar</Text>
+          <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={onReg} disabled={loading}>
+            <Text style={styles.buttonText}>{loading ? 'Loading...' : 'Daftar'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => nav.navigate('Login')}>
@@ -170,6 +169,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 4,
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
   },
   buttonText: {
     color: '#fff',

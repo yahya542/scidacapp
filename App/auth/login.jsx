@@ -1,29 +1,37 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase/firebaseconfig';
-import ComingSoon from '../../component/belumTersedia';
+import { login } from '../utils/api';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
   const nav = useNavigation();
 
   const show = (m) => Alert.alert('Login Gagal', m, [{ text: 'OK' }]);
 
   const onLogin = async () => {
     if (!email || !pass) return show('Semua field wajib diisi.');
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      const result = await login(email, pass);
+      if (result.success) {
+        nav.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
+      } else {
+        setErr(result.error || 'Login gagal');
+        show(result.error || 'Login gagal');
+      }
     } catch (e) {
-      let m = 'Terjadi kesalahan.';
-      if (e.code === 'auth/user-not-found') m = 'Email tidak terdaftar';
-      if (e.code === 'auth/wrong-password') m = 'Password salah';
-      if (e.code === 'auth/invalid-email') m = 'Email tidak valid';
-      setErr(m);
-      show(m);
+      setErr('Terjadi kesalahan.');
+      show('Terjadi kesalahan.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,8 +51,8 @@ export default function Login() {
         <TouchableOpacity onPress={() => nav.navigate('ComingSoon')} style={st.lp}>
           <Text style={st.lp}>Lupa Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={st.btn} onPress={onLogin}>
-          <Text style={st.btntxt}>Login</Text>
+        <TouchableOpacity style={[st.btn, loading && st.btnDisabled]} onPress={onLogin} disabled={loading}>
+          <Text style={st.btntxt}>{loading ? 'Loading...' : 'Login'}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => nav.navigate('Register')}>
           <Text style={st.link}>Belum punya akun? Daftar</Text>
@@ -136,5 +144,8 @@ const st = StyleSheet.create({
     color: 'red',
     marginLeft: '40%',
     marginTop: '5%',
+  },
+  btnDisabled: {
+    backgroundColor: '#ccc',
   }
 });
