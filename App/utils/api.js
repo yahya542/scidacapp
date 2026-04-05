@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = 'http://172.29.169.74:8000'; // Ganti dengan URL backend Anda
+const API_BASE_URL = 'https://sajakcodingan.biz.id:8443/studora'; // Ganti dengan URL backend Anda
 
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem('authToken');
