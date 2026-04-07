@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { login } from '../utils/api';
 
 
@@ -19,10 +19,12 @@ export default function Login() {
     try {
       const result = await login(email, pass);
       if (result.success) {
-        nav.reset({
-          index: 0,
-          routes: [{ name: 'Main' }],
-        });
+        nav.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        );
       } else {
         setErr(result.error || 'Login gagal');
         show(result.error || 'Login gagal');

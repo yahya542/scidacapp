@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = 'https://sajakcodingan.biz.id:8443/studora'; // Ganti dengan URL backend Anda
+//const API_BASE_URL = 'https://sajakcodingan.biz.id:8443/studora'; 
+const API_BASE_URL = 'http://10.130.120.74:8000/'; //local
 
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem('authToken');
@@ -10,17 +11,30 @@ const getAuthHeaders = async () => {
   };
 };
 
-export const login = async (email, password) => {
-  console.log('Attempting login to:', `${API_BASE_URL}/api/auth/login/`);
+export const login = async (identifier, password) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: email, password }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      // Gunakan 'username' sebagai key, karena di local & register pakai itu
+      body: JSON.stringify({ 
+        username: identifier, 
+        password: password 
+      }),
     });
+
+    const rawText = await response.text();
     
-    const data = await response.json();
-    console.log('Login response:', response.status, data);
+    // Cek jika responnya HTML (Error 500) sebelum di-parse
+    if (rawText.startsWith('<!DOCTYPE') || rawText.startsWith('<html')) {
+      console.error('Server melempar error HTML:', rawText);
+      return { success: false, error: 'Server bermasalah (500). Cek log backend.' };
+    }
+
+    const data = JSON.parse(rawText);
     
     if (response.ok && data.access) {
       await AsyncStorage.setItem('authToken', data.access);
@@ -33,10 +47,12 @@ export const login = async (email, password) => {
     
     return { success: false, error: data.detail || 'Login gagal' };
   } catch (error) {
-    console.error('Login error:', error);
-    return { success: false, error: 'Terjadi kesalahan jaringan' };
+    console.error('Login error detail:', error);
+    return { success: false, error: 'Masalah koneksi atau format data.' };
   }
 };
+
+
 
 export const register = async (email, username, password) => {
   console.log('Attempting register to:', `${API_BASE_URL}/api/auth/register/`);
