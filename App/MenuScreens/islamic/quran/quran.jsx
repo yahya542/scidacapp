@@ -19,17 +19,22 @@ const quran = () => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      const response = await fetch('https://quran-api.santrikoding.com/api/surah');
-      const jsonData = await response.json();
-      setData(jsonData); // save API to state
-      setFilter(jsonData);
-      setLoading(false);
-    } catch (error) {
-      setError(error.message); // error
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await fetch('https://equran.id/api/v2/surat');
+    const jsonData = await response.json();
+    
+    // API V2 membungkus list surah di dalam properti 'data'
+    const listSurah = jsonData.data; 
+    
+    setData(listSurah);
+    setFilter(listSurah);
+    setLoading(false);
+  } catch (error) {
+    setError(error.message);
+    setLoading(false);
+  }
+};
+
 
   // Menampilkan UI
   if (loading) {
@@ -56,7 +61,7 @@ const quran = () => {
       if (index >= list.length) return;
 
       const item = list[index];
-      if (matches(item.nama_latin.toLowerCase(), query.toLowerCase())) {
+      if (matches(item.namaLatin.toLowerCase(), query.toLowerCase())) {
         results.push(item);
       }
       byself(index + 1);
@@ -111,7 +116,7 @@ const quran = () => {
             <View style={styles.item}>
               <View style={styles.row}>
                 <Text >{item.nomor}</Text>
-                <Text style={styles.nl}>{item.nama_latin}</Text>
+                <Text style={styles.nl}>{item.namaLatin}</Text>
 
               </View>
               <View style={styles.row2}>

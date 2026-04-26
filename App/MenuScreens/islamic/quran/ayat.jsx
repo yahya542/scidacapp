@@ -8,23 +8,28 @@ const Ayat = ({ route }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://quran-api.santrikoding.com/api/surah/${id}`)
-      .then((response) => response.json())
-      .then((res) => {
-        setSurahInfo({
-          nomor: res.nomor,
-          nama: res.nama,
-          nama_latin: res.nama_latin,
-          jumlah_ayat: res.jumlah_ayat,
-        });
-        setAyat(res.ayat);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
+  fetch(`https://equran.id/api/v2/surat/${id}`)
+    .then((response) => response.json())
+    .then((json) => {
+      // Ambil data dari json.data
+      const res = json.data; 
+      
+      setSurahInfo({
+        nomor: res.nomor,
+        nama: res.nama,
+        namaLatin: res.namaLatin,
+        jumlahAyat: res.jumlahAyat, 
+        arti: res.arti,// API V2 menggunakan jumlahAyat (camelCase)
       });
-  }, [id]);
+      setAyat(res.ayat);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error(error);
+      setLoading(false);
+    });
+}, [id]);
+
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -40,24 +45,26 @@ const Ayat = ({ route }) => {
      
         <View style={styles.surahInfo}>
           <Text style={styles.title}>
-           {surahInfo?.nama_latin} ({surahInfo?.nama})
+           {surahInfo?.namaLatin} ({surahInfo?.nama})
           </Text>
           <Text >Surah ke : {surahInfo?.nomor}</Text>
-          <Text>Jumlah Ayat: {surahInfo?.jumlah_ayat}</Text>
+          <Text>Jumlah Ayat: {surahInfo?.jumlahAyat}</Text>
+          <Text>Arti: {surahInfo?.arti}</Text>
         </View>
 
         {/* Ayat-ayat */}
         {ayat.map((item) => (
-          <View key={item.nomor} style={styles.ayatBox}>
-            <Text style={styles.nomorAyat}>Ayat {item.nomor}</Text>
-            <Text style={styles.arab}>{item.ar}</Text>
-            <Text style={styles.terjemah}>{item.idn}</Text>
+          <View key={item.nomorAyat.toString()} style={styles.ayatBox}>
+            <Text style={styles.nomorAyat}>Ayat {item.nomorAyat}</Text>
+            <Text style={styles.arab}>{item.teksArab}</Text>
+            <Text style={styles.terjemah}>{item.teksIndonesia}</Text>
           </View>
         ))}
       </View>
     </ScrollView>
   );
 };
+
 
 export default Ayat;
 
