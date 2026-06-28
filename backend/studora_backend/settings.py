@@ -164,11 +164,12 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API untuk aplikasi Islamic, Auth, Quiz, dan Leaderboard',
     'VERSION': '1.2.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'SCHEMA_PATH_PREFIX': r'/api/', 
     
-    # --- TAMBAHKAN DUA BARIS DI BAWAH INI ---
+    # --- UBAH BARIS INI ---
+    'SCHEMA_PATH_PREFIX': r'/studora/api/', 
+    
     'COMPONENT_SPLIT_REQUEST': True,
-    'SECURITY': [{'BasicAuth': []}], # <-- Ini memaksa form login username & password
+    'SECURITY': [{'BasicAuth': []}], 
 }
 
 
