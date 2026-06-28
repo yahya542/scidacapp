@@ -5,10 +5,12 @@ import Garis from '../../../component/horizontal';
 import { useNavigation } from '@react-navigation/native';
 import Edit from '../../../component/edit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getProfile, logout } from '../../utils/api';
+import { getProfile, logout as apiLogout } from '../../utils/api';
+import { useAuth } from '../../index';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { checkAuth } = useAuth();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,9 +37,10 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await apiLogout();
+      checkAuth();
       Alert.alert('Logout berhasil', '', [
-        { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Login' }] }) }
+        { text: 'OK', onPress: () => navigation.getParent()?.reset({ index: 0, routes: [{ name: 'Login' }] }) }
       ]);
     } catch (e) {
       console.error('Logout error:', e);

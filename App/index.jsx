@@ -1,13 +1,16 @@
 // index.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef, createContext, useContext } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getProfile } from './utils/api';
+
+const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
 /* ---------- Auth ---------- */
 import Login from './auth/login';
@@ -105,49 +108,54 @@ function MainTab() {
 export default function App() {
   const [ready, setReady] = useState(false);
   const [user, setUser] = useState(null);
+  const navigationRef = useRef();
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      
+      if (token) {
+        const profileResult = await getProfile();
+        if (profileResult.success) {
+          setUser(profileResult);
+        } else {
+          await AsyncStorage.removeItem('authToken');
+          await AsyncStorage.removeItem('refreshToken');
+          await AsyncStorage.removeItem('userData');
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    } finally {
+      setReady(true);
+    }
+  }, []);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        const userData = await AsyncStorage.getItem('userData');
-        
-        if (token) {
-          const profileResult = await getProfile();
-          if (profileResult.success) {
-            setUser(profileResult);
-          } else {
-            await AsyncStorage.removeItem('authToken');
-            await AsyncStorage.removeItem('refreshToken');
-            await AsyncStorage.removeItem('userData');
-          }
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      } finally {
-        setReady(true);
-      }
-    };
-    
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   if (!ready) return <Splash />;
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
-          <Stack.Screen name="Main" component={MainTab} />
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name='ComingSoon' component={Comingsoon}   />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={{ user, setUser, checkAuth }}>
+      <NavigationContainer ref={navigationRef}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {user ? (
+            <Stack.Screen name="Main" component={MainTab} />
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
+              <Stack.Screen name='ComingSoon' component={Comingsoon}   />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 

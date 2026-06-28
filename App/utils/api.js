@@ -1,9 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const API_BASE_URL = 'http://mystock.sajakcodingan.biz.id/studora'; 
- const API_BASE_URL = 'http://10.142.117.74:8000'; //local1
-
-//const API_BASE_URL = 'http://192.168.43.69:8000';
+const API_BASE_URL = 'https://sajakcodingan.biz.id/studora'; 
 
 // const API_BASE_URL = 'http://192.168.8.3:8000'; //orbit
 
@@ -105,6 +102,7 @@ export const logout = async () => {
   await AsyncStorage.removeItem('authToken');
   await AsyncStorage.removeItem('refreshToken');
   await AsyncStorage.removeItem('userData');
+  return { success: true };
 };
 
 export const getLeaderboard = async () => {

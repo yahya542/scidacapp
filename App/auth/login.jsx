@@ -22,7 +22,7 @@ export default function Login() {
         nav.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: 'Login' }],
+            routes: [{ name: 'Main' }],
           })
         );
       } else {
