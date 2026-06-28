@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//const API_BASE_URL = 'https://sajakcodingan.biz.id:8443/studora'; 
-// const API_BASE_URL = 'http://10.130.120.74:8000/'; //local1
-//const API_BASE_URL = 'http://192.168.43.69:8000/'; //local2
-const API_BASE_URL = 'http://192.168.8.3:8000'; //orbit
+// const API_BASE_URL = 'http://mystock.sajakcodingan.biz.id/studora'; 
+ const API_BASE_URL = 'http://10.142.117.74:8000'; //local1
+
+//const API_BASE_URL = 'http://192.168.43.69:8000';
+
+// const API_BASE_URL = 'http://192.168.8.3:8000'; //orbit
 
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem('authToken');

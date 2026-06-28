@@ -2,7 +2,7 @@
   "expo": {
     "name": "scidacapp",
     "slug": "scidacapp",
-    "version": "1.0.0",
+    "version": "1.0.1", // 1. Naikkan versi ini dari 1.0.0 ke 1.0.1
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -13,6 +13,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.scidacapp.app", // 2. Tambahkan nama paket unik ini
+      "versionCode": 2,               // 3. Naikkan angka ini dari 1 ke 2
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -24,7 +26,6 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      
       [
         "expo-splash-screen",
         {

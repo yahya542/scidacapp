@@ -10,9 +10,18 @@ from .serializers import (
     QuestionWithAnswerSerializer,
     QuizAttemptSerializer,
     GenerateQuestionRequestSerializer,
-    CheckAnswerRequestSerializer
+    CheckAnswerRequestSerializer,
+    AIQuestionResponseSerializer,
+    AIVerdictResponseSerializer
 )
+from drf_spectacular.utils import extend_schema
 from .ai_service import AIService
+
+status_map = {
+    'benar': 'correct',
+    'hampir': 'partial',
+    'salah': 'incorrect'
+}
 
 
 class TopicListCreateView(generics.ListCreateAPIView):
@@ -50,6 +59,7 @@ class QuizAttemptListView(generics.ListAPIView):
         return QuizAttempt.objects.filter(user=self.request.user)
 
 
+@extend_schema(request=GenerateQuestionRequestSerializer, responses={200: AIQuestionResponseSerializer})
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def generate_question(request):
@@ -81,6 +91,10 @@ def generate_question(request):
     })
 
 
+@extend_schema(
+    request=CheckAnswerRequestSerializer,
+    responses={200: {'type': 'object', 'properties': {'verdict': 'string', 'score': 'integer', 'correct_answer': 'string', 'attempt_id': 'string'}}}
+)
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def check_answer(request):
@@ -124,13 +138,6 @@ def check_answer(request):
         'correct_answer': correct_answer,
         'total_points': request.user.points
     })
-
-
-status_map = {
-    'benar': 'correct',
-    'hampir': 'partial',
-    'salah': 'incorrect'
-}
 
 
 @api_view(['GET'])

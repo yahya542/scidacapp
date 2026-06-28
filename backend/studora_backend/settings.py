@@ -92,9 +92,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 # Django REST Framework
+# settings.py
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication', # <-- TAMBAHKAN BARIS INI
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -108,6 +111,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
 
 # JWT Settings
 from datetime import timedelta
@@ -132,9 +136,9 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
-# AI API Configuration (OpenRouter)
+# AI API Configuration (OpenRouter Free Models)
 API_KEY = os.getenv('API_KEY', '')
-MODEL = os.getenv('MODEL', 'mistral:instruct')
+MODEL = os.getenv('MODEL', 'google/gemma-7b-it:free')
 
 TEMPLATES = [
     {
@@ -153,13 +157,20 @@ TEMPLATES = [
 ]
 
 # settings.py
+# settings.py
+
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Studora', # Hanya satu string
+    'TITLE': 'Studora',
     'DESCRIPTION': 'API untuk aplikasi Islamic, Auth, Quiz, dan Leaderboard',
     'VERSION': '1.2.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'SCHEMA_PATH_PREFIX': r'/api/', # Mengabaikan /api/ agar tag diambil dari path setelahnya
+    'SCHEMA_PATH_PREFIX': r'/api/', 
+    
+    # --- TAMBAHKAN DUA BARIS DI BAWAH INI ---
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SECURITY': [{'BasicAuth': []}], # <-- Ini memaksa form login username & password
 }
+
 
 
 

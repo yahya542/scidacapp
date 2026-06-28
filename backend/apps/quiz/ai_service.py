@@ -5,11 +5,9 @@ import re
 
 
 class AIService:
-    BASE_URL = 'https://generatedpromptpro.online/sieka/api/bot_api.php'
+    BASE_URL = 'https://openrouter.ai/api/v1/chat/completions'
+    DEFAULT_MODEL = 'mistralai/mistral-7b-instruct:free'
 
-    # =========================
-    # SAFE SETTINGS
-    # =========================
     @staticmethod
     def _get_setting(name, default=None):
         return getattr(settings, name, default)
@@ -22,12 +20,15 @@ class AIService:
             'Content-Type': 'application/json',
         }
 
-    # =========================
-    # CALL API
-    # =========================
+    @classmethod
+    def _get_model(cls):
+        model = cls._get_setting("MODEL")
+        return model if model else cls.DEFAULT_MODEL
+
     @classmethod
     def _call_api(cls, prompt):
         api_key = cls._get_setting("API_KEY")
+        print(f"🔑 API_KEY being used: {api_key[:20]}..." if api_key else "❌ API_KEY is None")
 
         if not api_key:
             print("❌ API_KEY tidak ditemukan")
@@ -37,7 +38,10 @@ class AIService:
             response = requests.post(
                 cls.BASE_URL,
                 headers=cls._get_headers(),
-                json={'pesan': prompt},
+                json={
+                    'model': cls._get_model(),
+                    'messages': [{'role': 'user', 'content': prompt}]
+                },
                 timeout=30
             )
 
@@ -66,8 +70,9 @@ class AIService:
     def _extract_content(result):
         try:
             return result.get('choices', [{}])[0].get('message', {}).get('content', '')
-        except Exception:
-            return str(result)
+        except Exception as e:
+            print(f"⚠️ Extract error: {e}, result: {result}")
+            return ""
 
     # =========================
     # GENERATE QUESTION
