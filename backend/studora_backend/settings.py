@@ -165,8 +165,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.0',
     'SERVE_INCLUDE_SCHEMA': False,
     
-    # --- UBAH BARIS INI ---
-    'SCHEMA_PATH_PREFIX': r'/studora/api/', 
+    # 1. Biarkan pemotongan skema hanya di level internal Django '/api/'
+    'SCHEMA_PATH_PREFIX': r'/api/', 
+    
+    # 2. TAMBAHKAN BARIS INI untuk menyisipkan prefix proxy di UI Swagger saat ditembak
+    'SCHEMA_PATH_PREFIX_INSERT': '/studora', 
     
     'COMPONENT_SPLIT_REQUEST': True,
     'SECURITY': [{'BasicAuth': []}], 
