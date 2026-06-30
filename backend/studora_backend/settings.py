@@ -156,20 +156,14 @@ TEMPLATES = [
     },
 ]
 
-# settings.py
-# settings.py
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Studora',
     'VERSION': '1.2.0',
     'SERVERS': [
-        {'url': 'https://sajakcodingan.biz.id/studora', 'description': 'Production Server'},
+        # Gunakan path relatif agar aman baik di local maupun production
+        {'url': '/studora', 'description': 'Internal Server Path'},
     ],
-    'SCHEMA_PATH_PREFIX': r'/api/',
-    # ... setting lainnya ...
+    'SCHEMA_PATH_PREFIX': r'/studora/api/', # Sesuaikan prefix skemanya
 }
-# Tambahkan ini di bagian paling bawah settings.py
 
-# Mengaktifkan pembacaan header proxy dari Nginx
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

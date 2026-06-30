@@ -1,8 +1,8 @@
+# urls.py
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-# 🌟 GANTI SpectacularSwaggerView dengan SpectacularSwaggerSplitView
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerSplitView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 studora_patterns = [
     path('api/auth/', include('apps.users.urls')),
@@ -12,12 +12,13 @@ studora_patterns = [
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     
-    # 🌟 GUNAKAN SpectacularSwaggerSplitView di sini
-    path('', SpectacularSwaggerSplitView.as_view(url_name='schema'), name='swagger-ui'),
+    # Swagger UI sekarang berada di /studora/
+    path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
 urlpatterns = [
-    path('', include(studora_patterns)),
+    # 🌟 Masukkan prefix 'studora/' langsung di urlconf utama Django
+    path('studora/', include(studora_patterns)),
 ]
 
 if settings.DEBUG:
