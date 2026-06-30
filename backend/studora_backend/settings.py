@@ -80,10 +80,10 @@ TIME_ZONE = 'Asia/Jakarta'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/studora/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/studora/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -162,17 +162,8 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Studora',
     'VERSION': '1.2.0',
     'SERVERS': [
-        # Pastikan skema HTTPS dan domain + prefix tertulis lengkap di sini
-        {'url': 'https://sajakcodingan.biz.id', 'description': 'Production Server'},
+        {'url': 'https://sajakcodingan.biz.id/studora', 'description': 'Production Server'},
     ],
     'SCHEMA_PATH_PREFIX': r'/api/',
     # ... setting lainnya ...
 }
-
-
-
-
-STATIC_URL = '/studora/static/'
-ALLOWED_HOSTS = ['*']
-
-#FORCE_SCRIPT_NAME = '/studora'

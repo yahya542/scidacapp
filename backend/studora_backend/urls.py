@@ -15,8 +15,7 @@ studora_patterns = [
 ]
 
 urlpatterns = [
-    # Membungkus semua pattern tadi dengan prefix 'studora/'
-    path('/studora', include(studora_patterns)),
+    path('', include(studora_patterns)),
 ]
 
 if settings.DEBUG:

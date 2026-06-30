@@ -2,8 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_BASE_URL = 'https://sajakcodingan.biz.id/studora'; 
 
-// const API_BASE_URL = 'http://192.168.8.3:8000'; //orbit
-
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem('authToken');
   return {
@@ -108,7 +106,7 @@ export const logout = async () => {
 export const getLeaderboard = async () => {
   try {
     const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE_URL}api/leaderboard/`, {
+    const response = await fetch(`${API_BASE_URL}/api/leaderboard/`, {
       headers,
     });
     
