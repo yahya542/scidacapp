@@ -167,3 +167,11 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': r'/api/',
     # ... setting lainnya ...
 }
+# Tambahkan ini di bagian paling bawah settings.py
+
+# Mengaktifkan pembacaan header proxy dari Nginx
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Memaksa Django menyertakan prefix /studora pada seluruh routing internal
+FORCE_SCRIPT_NAME = '/studora'
