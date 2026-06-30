@@ -11,15 +11,19 @@ studora_patterns = [
     path('api/islamic/', include('apps.islamic.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    
-    # Swagger UI sekarang berada di /studora/
     path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
-urlpatterns = [
-    # 🌟 Masukkan prefix 'studora/' langsung di urlconf utama Django
-    path('studora/', include(studora_patterns)),
-]
+# Jika di server production, bungkus dengan prefix 'studora/'
+# Jika di local (DEBUG = True), biarkan menggunakan root biasa '' agar tidak perlu ketik /studora/ di local
+if not settings.DEBUG:
+    urlpatterns = [
+        path('studora/', include(studora_patterns)),
+    ]
+else:
+    urlpatterns = [
+        path('', include(studora_patterns)),
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
