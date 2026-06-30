@@ -10,8 +10,11 @@ studora_patterns = [
     path('api/leaderboard/', include('apps.leaderboard.urls')),
     path('api/islamic/', include('apps.islamic.urls')),
 
+    # Tempat file schema JSON/YAML dihasilkan
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    
+    # 🌟 PERUBAHAN DI SINI: Paksa endpoint skema mengarah ke path dengan prefix penuh
+    path('', SpectacularSwaggerView.as_view(url='/studora/api/schema/'), name='swagger-ui'),
 ]
 
 urlpatterns = [
