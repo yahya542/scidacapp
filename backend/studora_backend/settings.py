@@ -158,21 +158,15 @@ TEMPLATES = [
 
 # settings.py
 # settings.py
-
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Studora',
-    'DESCRIPTION': 'API untuk aplikasi Islamic, Auth, Quiz, dan Leaderboard',
     'VERSION': '1.2.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    
-    # 1. Biarkan pemotongan skema hanya di level internal Django '/api/'
-    'SCHEMA_PATH_PREFIX': r'/api/', 
-    
-    # 2. TAMBAHKAN BARIS INI untuk menyisipkan prefix proxy di UI Swagger saat ditembak
-    'SCHEMA_PATH_PREFIX_INSERT': '/studora', 
-    
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SECURITY': [{'BasicAuth': []}], 
+    'SERVERS': [
+        # Pastikan skema HTTPS dan domain + prefix tertulis lengkap di sini
+        {'url': 'https://sajakcodingan.biz.id', 'description': 'Production Server'},
+    ],
+    'SCHEMA_PATH_PREFIX': r'/api/',
+    # ... setting lainnya ...
 }
 
 
@@ -181,4 +175,4 @@ SPECTACULAR_SETTINGS = {
 STATIC_URL = '/studora/static/'
 ALLOWED_HOSTS = ['*']
 
-FORCE_SCRIPT_NAME = '/studora'
+#FORCE_SCRIPT_NAME = '/studora'
