@@ -163,7 +163,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.0',
     'SERVERS': [
         # Pastikan skema HTTPS dan domain + prefix tertulis lengkap di sini
-        {'url': 'https://sajakcodingan.biz.id/studora', 'description': 'Production Server'},
+        {'url': 'https://sajakcodingan.biz.id', 'description': 'Production Server'},
     ],
     'SCHEMA_PATH_PREFIX': r'/api/',
     # ... setting lainnya ...
